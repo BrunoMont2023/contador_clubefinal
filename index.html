@@ -9,15 +9,18 @@
 <body>
     <div class="container">
         <h1>Contador Regressivo</h1>
-        <div id="countdown">
-            <div class="input-container">
-                <input type="text" id="activity-name" placeholder="Nome da Atividade">
-                <input type="number" id="hours" placeholder="Horas">
-                <input type="number" id="minutes" placeholder="Minutos">
-                <button onclick="startCountdown()">Iniciar Contagem</button>
-                <button onclick="pauseCountdown()">Pausar Contagem</button>
-                <button onclick="resetCountdown()">Reiniciar Contagem</button>
-            </div>
+        <div class="input-container">
+            <input type="text" id="activity-name" placeholder="Nome da Atividade">
+            <input type="number" id="hours" placeholder="Horas">
+            <span>:</span>
+            <input type="number" id="minutes" placeholder="Minutos">
+            <button onclick="startCountdown()">Iniciar</button>
+            <button onclick="pauseCountdown()">Pausar</button>
+            <button onclick="resumeCountdown()">Continuar</button>
+            <button onclick="resetCountdown()">Reiniciar</button>
+        </div>
+        <div id="countdown-display">
+            <h2 id="activity-title"></h2>
             <div id="timer">00:00:00</div>
         </div>
     </div>
