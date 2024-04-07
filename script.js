@@ -1,55 +1,45 @@
-let countdownInterval;
-let countdownPaused = false;
-let countdownEndTime;
-let remainingTime;
+const timers = {}; // Objeto para armazenar os timers
 
-function startCountdown() {
-    const activityName = document.getElementById('activityName').value;
-    const totalMinutes = parseInt(prompt('Por quantos minutos deseja contar?', '30'));
+function startTimer(group, activityIndex) {
+    const timerId = `${group}-${activityIndex}`;
+    const duration = parseInt(prompt('Digite a duração da atividade (em minutos):', '15'));
 
-    if (!isNaN(totalMinutes) && totalMinutes > 0) {
-        countdownEndTime = Date.now() + totalMinutes * 60 * 1000;
-
-        if (!countdownInterval) {
-            countdownInterval = setInterval(updateCountdown, 1000);
-        }
-
-        countdownPaused = false;
+    if (!isNaN(duration) && duration > 0) {
+        const endTime = Date.now() + duration * 60 * 1000;
+        timers[timerId] = setInterval(() => updateTimer(timerId, endTime), 1000);
     } else {
-        alert('Por favor, insira um valor válido para os minutos.');
+        alert('Por favor, insira uma duração válida para a atividade.');
     }
 }
 
-function pauseCountdown() {
-    countdownPaused = true;
+function pauseTimer(group, activityIndex) {
+    const timerId = `${group}-${activityIndex}`;
+    clearInterval(timers[timerId]);
+    delete timers[timerId];
 }
 
-function resetCountdown() {
-    clearInterval(countdownInterval);
-    countdownInterval = null;
-    countdownEndTime = null;
-    countdownPaused = false;
-    document.getElementById('countdown').textContent = '00:00:00';
+function resetTimer(group, activityIndex) {
+    const timerId = `${group}-${activityIndex}`;
+    clearInterval(timers[timerId]);
+    delete timers[timerId];
+    document.getElementById(`timer-${timerId}`).textContent = '00:00:00';
 }
 
-function updateCountdown() {
-    if (!countdownEndTime) return;
-
-    const now = Date.now();
-    remainingTime = countdownEndTime - now;
+function updateTimer(timerId, endTime) {
+    const remainingTime = endTime - Date.now();
 
     if (remainingTime <= 0) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
-        document.getElementById('countdown').textContent = '00:00:00';
-        alert('Contagem regressiva concluída para: ' + document.getElementById('activityName').value);
+        clearInterval(timers[timerId]);
+        delete timers[timerId];
+        document.getElementById(`timer-${timerId}`).textContent = '00:00:00';
+        alert('Atividade concluída!');
     } else {
         const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
         const seconds = Math.floor((remainingTime / 1000) % 60);
 
         const formattedTime = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
-        document.getElementById('countdown').textContent = formattedTime;
+        document.getElementById(`timer-${timerId}`).textContent = formattedTime;
     }
 }
 
