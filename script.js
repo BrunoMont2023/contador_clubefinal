@@ -1,74 +1,61 @@
-let activityIndex = 0;
+let timer; // Variável para armazenar o timer
+let endTime; // Variável para armazenar o tempo de término
+let paused = false; // Variável para rastrear se o contador está pausado
+const timerDisplay = document.getElementById('timer');
 
-function addActivity() {
-    activityIndex++;
-    const activitiesContainer = document.getElementById('activitiesContainer');
+function startCountdown() {
+    const activityName = document.getElementById('activity-name').value.trim();
+    const hours = parseInt(document.getElementById('hours').value) || 0;
+    const minutes = parseInt(document.getElementById('minutes').value) || 0;
 
-    const activityDiv = document.createElement('div');
-    activityDiv.classList.add('activity');
-
-    const activityNameInput = document.createElement('input');
-    activityNameInput.type = 'text';
-    activityNameInput.placeholder = 'Nome da Atividade';
-    activityNameInput.classList.add('activity-name');
-
-    const timerDisplay = document.createElement('div');
-    timerDisplay.classList.add('timer');
-    timerDisplay.textContent = '00:00:00';
-
-    const startButton = document.createElement('button');
-    startButton.textContent = 'Iniciar';
-    startButton.onclick = () => startTimer(activityIndex, timerDisplay);
-
-    const pauseButton = document.createElement('button');
-    pauseButton.textContent = 'Pausar';
-    pauseButton.onclick = () => pauseTimer(activityIndex);
-
-    const resetButton = document.createElement('button');
-    resetButton.textContent = 'Reiniciar';
-    resetButton.onclick = () => resetTimer(activityIndex, timerDisplay);
-
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'X';
-    deleteButton.classList.add('delete');
-    deleteButton.onclick = () => deleteActivity(activityDiv);
-
-    activityDiv.appendChild(activityNameInput);
-    activityDiv.appendChild(timerDisplay);
-    activityDiv.appendChild(startButton);
-    activityDiv.appendChild(pauseButton);
-    activityDiv.appendChild(resetButton);
-    activityDiv.appendChild(deleteButton);
-
-    activitiesContainer.appendChild(activityDiv);
-}
-
-let timers = {};
-
-function startTimer(activityIndex, timerDisplay) {
-    const activityNameInput = document.querySelector(`.activity:nth-child(${activityIndex}) .activity-name`);
-    const activityName = activityNameInput.value.trim();
-
-    if (activityName === '') {
+    if (!activityName) {
         alert('Por favor, insira o nome da atividade.');
         return;
     }
 
-    const duration = parseInt(prompt('Digite a duração da atividade (em minutos):', '15'));
-
-    if (isNaN(duration) || duration <= 0) {
-        alert('Por favor, insira uma duração válida para a atividade.');
+    if (hours <= 0 && minutes <= 0) {
+        alert('Por favor, insira uma duração válida.');
         return;
     }
 
-    const endTime = Date.now() + duration * 60 * 1000;
-    timers[activityIndex] = setInterval(() => updateTimer(endTime, timerDisplay), 1000);
-    updateActivityName(activityIndex, activityName);
+    const now = Date.now();
+    endTime = now + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000);
+
+    // Iniciar o contador regressivo
+    timer = setInterval(updateCountdown, 1000);
+    paused = false;
 }
 
-function pauseTimer(activityIndex) {
-    clearInterval(timers[activityIndex]);
+function updateCountdown() {
+    const now = Date.now();
+    const remainingTime = endTime - now;
+
+    if (remainingTime <= 0) {
+        clearInterval(timer);
+        timerDisplay.textContent = '00:00:00';
+        alert('Tempo esgotado!');
+        return;
+    }
+
+    const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
+    const seconds = Math.floor((remainingTime / 1000) % 60);
+
+    const formattedTime = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    timerDisplay.textContent = formattedTime;
 }
 
-function resetTimer(activityIndex, timer
+function pauseCountdown() {
+    clearInterval(timer);
+    paused = true;
+}
 
+function resetCountdown() {
+    clearInterval(timer);
+    timerDisplay.textContent = '00:00:00';
+    paused = false;
+}
+
+function padZero(num) {
+    return (num < 10 ? '0' : '') + num;
+}
