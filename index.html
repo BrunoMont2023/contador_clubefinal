@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contador Regressivo para Atividades</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Arquivo CSS para estilos -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -15,20 +15,18 @@
                 <h2>Grupo A</h2>
                 <div class="activities">
                     <div class="activity">
-                        <span>Atividade 1</span>
-                        <div class="timer" id="timer-groupA-1">00:00:00</div>
-                        <button onclick="startTimer('groupA', 1)">Iniciar</button>
-                        <button onclick="pauseTimer('groupA', 1)">Pausar</button>
-                        <button onclick="resetTimer('groupA', 1)">Reiniciar</button>
+                        <input type="text" class="activity-name" placeholder="Nome da Atividade">
+                        <div class="timer" id="timer-groupA">00:00:00</div>
+                        <button onclick="startTimer('groupA')">Iniciar</button>
+                        <button onclick="pauseTimer('groupA')">Pausar</button>
+                        <button onclick="resetTimer('groupA')">Reiniciar</button>
                     </div>
-                    <!-- Adicione mais atividades conforme necessário -->
                 </div>
             </div>
-            <!-- Adicione mais grupos conforme necessário -->
         </div>
     </div>
 
-    <script src="script.js"></script> <!-- Arquivo JavaScript para funcionalidade -->
+    <script src="script.js"></script>
 </body>
 </html>
 
