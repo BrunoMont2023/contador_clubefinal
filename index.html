@@ -3,14 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador Regressivo</title>
+    <title>Contador Regressivo Personalizável</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Contador Regressivo</h1>
-        <div id="countdown"></div>
+    <div class="banner">
+        <h1>Meu Contador Regressivo</h1>
     </div>
+    <div class="container">
+        <div class="countdown-box">
+            <div id="timer"></div>
+            <div class="controls">
+                <button id="startBtn" onclick="startCountdown()">Iniciar</button>
+                <button id="pauseBtn" onclick="pauseCountdown()" disabled>Pausar</button>
+                <button id="resetBtn" onclick="resetCountdown()">Reiniciar</button>
+            </div>
+        </div>
+        <div class="image-overlay">
+            <img src="sua-imagem.jpg" alt="Imagem de Fundo">
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
