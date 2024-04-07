@@ -3,27 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador Regressivo Personalizável</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Contador Regressivo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #countdown {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="banner">
-        <h1>Meu Contador Regressivo</h1>
-    </div>
-    <div class="container">
-        <div class="countdown-box">
-            <div id="timer"></div>
-            <div class="controls">
-                <button id="startBtn" onclick="startCountdown()">Iniciar</button>
-                <button id="pauseBtn" onclick="pauseCountdown()" disabled>Pausar</button>
-                <button id="resetBtn" onclick="resetCountdown()">Reiniciar</button>
-            </div>
-        </div>
-        <div class="image-overlay">
-            <img src="https://github.com/BrunoMont2023/contador_clubefinal/blob/main/images/Logoclube.png" alt="Imagem de Fundo">
-        </div>
-    </div>
+    <h1>Contador Regressivo</h1>
+
+    <div id="countdown">00:00:00</div>
+
+    <input type="text" id="activityName" placeholder="Nome da Atividade">
+
+    <button onclick="startCountdown()">Iniciar</button>
+    <button onclick="pauseCountdown()">Pausar</button>
+    <button onclick="resetCountdown()">Reiniciar</button>
 
     <script src="script.js"></script>
 </body>
 </html>
+
