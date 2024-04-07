@@ -1,20 +1,56 @@
 body {
     font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
     background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.banner {
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
 }
 
 .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.countdown-box {
+    position: relative;
+    border: 2px solid #007bff;
+    padding: 20px;
     text-align: center;
 }
 
-#countdown {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
+.controls {
     margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.5; /* Opacidade da imagem (0.5 = 50%) */
+}
+
+.image-overlay img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover; /* Ajustar a imagem para preencher a div */
 }
