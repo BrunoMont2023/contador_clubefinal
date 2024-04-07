@@ -1,37 +1,45 @@
-const timers = {}; // Objeto para armazenar os timers
+const timers = {};
 
-function startTimer(group, activityIndex) {
-    const timerId = `${group}-${activityIndex}`;
-    const duration = parseInt(prompt('Digite a duração da atividade (em minutos):', '15'));
-
-    if (!isNaN(duration) && duration > 0) {
-        const endTime = Date.now() + duration * 60 * 1000;
-        timers[timerId] = setInterval(() => updateTimer(timerId, endTime), 1000);
-    } else {
-        alert('Por favor, insira uma duração válida para a atividade.');
+function startTimer(groupId) {
+    const activityNameInput = document.querySelector(`#${groupId} .activity-name`);
+    const timerDisplay = document.querySelector(`#${groupId} .timer`);
+    const activityName = activityNameInput.value.trim();
+    
+    if (activityName === '') {
+        alert('Por favor, insira o nome da atividade.');
+        return;
     }
+    
+    const duration = parseInt(prompt('Digite a duração da atividade (em minutos):', '15'));
+    
+    if (isNaN(duration) || duration <= 0) {
+        alert('Por favor, insira uma duração válida para a atividade.');
+        return;
+    }
+    
+    const endTime = Date.now() + duration * 60 * 1000;
+    timers[groupId] = setInterval(() => updateTimer(timerDisplay, endTime), 1000);
 }
 
-function pauseTimer(group, activityIndex) {
-    const timerId = `${group}-${activityIndex}`;
-    clearInterval(timers[timerId]);
-    delete timers[timerId];
+function pauseTimer(groupId) {
+    clearInterval(timers[groupId]);
+    delete timers[groupId];
 }
 
-function resetTimer(group, activityIndex) {
-    const timerId = `${group}-${activityIndex}`;
-    clearInterval(timers[timerId]);
-    delete timers[timerId];
-    document.getElementById(`timer-${timerId}`).textContent = '00:00:00';
+function resetTimer(groupId) {
+    const timerDisplay = document.querySelector(`#${groupId} .timer`);
+    timerDisplay.textContent = '00:00:00';
+    clearInterval(timers[groupId]);
+    delete timers[groupId];
 }
 
-function updateTimer(timerId, endTime) {
+function updateTimer(timerDisplay, endTime) {
     const remainingTime = endTime - Date.now();
 
     if (remainingTime <= 0) {
-        clearInterval(timers[timerId]);
-        delete timers[timerId];
-        document.getElementById(`timer-${timerId}`).textContent = '00:00:00';
+        timerDisplay.textContent = '00:00:00';
+        clearInterval(timers[groupId]);
+        delete timers[groupId];
         alert('Atividade concluída!');
     } else {
         const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
@@ -39,11 +47,12 @@ function updateTimer(timerId, endTime) {
         const seconds = Math.floor((remainingTime / 1000) % 60);
 
         const formattedTime = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
-        document.getElementById(`timer-${timerId}`).textContent = formattedTime;
+        timerDisplay.textContent = formattedTime;
     }
 }
 
 function formatTime(time) {
     return time < 10 ? `0${time}` : time;
 }
+
 
