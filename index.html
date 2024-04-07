@@ -3,47 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador Regressivo</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        #countdown {
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        
-        input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            width: 300px;
-            margin-bottom: 20px;
-        }
-        
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-    </style>
+    <title>Contador Regressivo para Atividades</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Arquivo CSS para estilos -->
 </head>
 <body>
-    <h1>Contador Regressivo</h1>
+    <div class="container">
+        <h1>Contador Regressivo para Atividades</h1>
 
-    <div id="countdown">00:00:00</div>
+        <div class="groups">
+            <div class="group">
+                <h2>Grupo A</h2>
+                <div class="activities">
+                    <div class="activity">
+                        <span>Atividade 1</span>
+                        <div class="timer" id="timer-groupA-1">00:00:00</div>
+                        <button onclick="startTimer('groupA', 1)">Iniciar</button>
+                        <button onclick="pauseTimer('groupA', 1)">Pausar</button>
+                        <button onclick="resetTimer('groupA', 1)">Reiniciar</button>
+                    </div>
+                    <!-- Adicione mais atividades conforme necessário -->
+                </div>
+            </div>
+            <!-- Adicione mais grupos conforme necessário -->
+        </div>
+    </div>
 
-    <input type="text" id="activityName" placeholder="Nome da Atividade">
-
-    <button onclick="startCountdown()">Iniciar</button>
-    <button onclick="pauseCountdown()">Pausar</button>
-    <button onclick="resetCountdown()">Reiniciar</button>
-
-    <script src="script.js"></script>
+    <script src="script.js"></script> <!-- Arquivo JavaScript para funcionalidade -->
 </body>
 </html>
+
 
