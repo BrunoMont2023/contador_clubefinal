@@ -10,24 +10,14 @@
     <div class="container">
         <h1>Contador Regressivo para Atividades</h1>
 
-        <div class="groups">
-            <div class="group">
-                <h2>Grupo A</h2>
-                <div class="activities">
-                    <div class="activity">
-                        <input type="text" class="activity-name" placeholder="Nome da Atividade">
-                        <div class="timer" id="timer-groupA">00:00:00</div>
-                        <button onclick="startTimer('groupA')">Iniciar</button>
-                        <button onclick="pauseTimer('groupA')">Pausar</button>
-                        <button onclick="resetTimer('groupA')">Reiniciar</button>
-                    </div>
-                </div>
-            </div>
+        <div id="activitiesContainer">
+            <!-- Área para adicionar atividades -->
         </div>
+
+        <button onclick="addActivity()">Adicionar Atividade</button>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-
 
