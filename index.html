@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador Regressivo para Atividades</title>
+    <title>Contador Regressivo</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Contador Regressivo para Atividades</h1>
-
-        <div id="activitiesContainer">
-            <!-- Área para adicionar atividades -->
+        <h1>Contador Regressivo</h1>
+        <div id="countdown">
+            <div class="input-container">
+                <input type="text" id="activity-name" placeholder="Nome da Atividade">
+                <input type="number" id="hours" placeholder="Horas">
+                <input type="number" id="minutes" placeholder="Minutos">
+                <button onclick="startCountdown()">Iniciar Contagem</button>
+                <button onclick="pauseCountdown()">Pausar Contagem</button>
+                <button onclick="resetCountdown()">Reiniciar Contagem</button>
+            </div>
+            <div id="timer">00:00:00</div>
         </div>
-
-        <button onclick="addActivity()">Adicionar Atividade</button>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-
