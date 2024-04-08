@@ -8,9 +8,10 @@
 </head>
 <body>
     <div class="container">
+        <img src="https://raw.githubusercontent.com/BrunoMont2023/contador_clubefinal/main/images/Logoclube.png" alt="Relógio" class="logo banner-image">
         <h1>Contador Regressivo</h1>
         <div class="input-container">
-            <input type="text" id="activity-name" placeholder="Nome da Atividade">
+            <input type="text" id="activity-name" placeholder="Nome da Atividade" oninput="updateTitle()">
             <input type="number" id="hours" placeholder="Horas">
             <span>:</span>
             <input type="number" id="minutes" placeholder="Minutos">
@@ -19,7 +20,11 @@
             <button onclick="resumeCountdown()">Continuar</button>
             <button onclick="resetCountdown()">Reiniciar</button>
         </div>
-        <div id="countdown-display">
+        <div class="groups-container">
+            <h2>Grupos</h2>
+            <textarea id="group-names" rows="8" placeholder="Digite os nomes dos grupos"></textarea>
+        </div>
+        <div id="countdown-display" class="countdown-container">
             <h2 id="activity-title"></h2>
             <div id="timer">00:00:00</div>
         </div>
