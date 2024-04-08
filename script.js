@@ -1,17 +1,16 @@
-let timer; // Variável para armazenar o timer
-let endTime; // Variável para armazenar o tempo de término
-let paused = false; // Variável para rastrear se o contador está pausado
-const timerDisplay = document.getElementById('timer');
+let countdownInterval;
+let endTime;
+let paused = false;
+
+function updateTitle() {
+    const activityName = document.getElementById('activity-name').value.trim();
+    document.getElementById('activity-title').textContent = activityName || 'Contador Regressivo';
+}
 
 function startCountdown() {
     const activityName = document.getElementById('activity-name').value.trim();
     const hours = parseInt(document.getElementById('hours').value) || 0;
     const minutes = parseInt(document.getElementById('minutes').value) || 0;
-
-    if (!activityName) {
-        alert('Por favor, insira o nome da atividade.');
-        return;
-    }
 
     if (hours <= 0 && minutes <= 0) {
         alert('Por favor, insira uma duração válida.');
@@ -21,8 +20,11 @@ function startCountdown() {
     const now = Date.now();
     endTime = now + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000);
 
-    // Iniciar o contador regressivo
-    timer = setInterval(updateCountdown, 1000);
+    document.getElementById('activity-title').textContent = activityName || 'Contador Regressivo';
+    document.getElementById('countdown-display').style.display = 'block';
+    updateCountdown(); // Atualiza imediatamente ao iniciar
+
+    countdownInterval = setInterval(updateCountdown, 1000);
     paused = false;
 }
 
@@ -31,9 +33,9 @@ function updateCountdown() {
     const remainingTime = endTime - now;
 
     if (remainingTime <= 0) {
-        clearInterval(timer);
-        timerDisplay.textContent = '00:00:00';
-        alert('Tempo esgotado!');
+        clearInterval(countdownInterval);
+        document.getElementById('timer').textContent = '00:00:00';
+        alert('Tempo esgotado para a atividade!');
         return;
     }
 
@@ -42,20 +44,21 @@ function updateCountdown() {
     const seconds = Math.floor((remainingTime / 1000) % 60);
 
     const formattedTime = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
-    timerDisplay.textContent = formattedTime;
+    document.getElementById('timer').textContent = formattedTime;
 }
 
 function pauseCountdown() {
-    clearInterval(timer);
+    clearInterval(countdownInterval);
     paused = true;
 }
 
-function resetCountdown() {
-    clearInterval(timer);
-    timerDisplay.textContent = '00:00:00';
-    paused = false;
+function resumeCountdown() {
+    if (paused) {
+        countdownInterval = setInterval(updateCountdown, 1000);
+        paused = false;
+    }
 }
 
-function padZero(num) {
-    return (num < 10 ? '0' : '') + num;
-}
+function resetCountdown() {
+    clearInterval(countdownInterval);
+    document.getElementById('activity-title').textContent = 'Contador Regress
