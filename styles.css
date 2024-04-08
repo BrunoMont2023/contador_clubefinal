@@ -1,28 +1,84 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #f8f8f8;
+    color: #333;
     text-align: center;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-    max-width: 600px;
+    max-width: 800px; /* Ajuste a largura conforme necessário */
     margin: 0 auto;
     padding: 20px;
 }
 
+.logo {
+    width: 100%; /* Imagem ocupará 100% da largura do contêiner */
+    max-height: 200px; /* Altura máxima da imagem */
+    margin-bottom: 20px;
+}
+
+.banner-image {
+    object-fit: cover; /* Garante que a imagem cubra o espaço especificado */
+}
+
 h1 {
-    color: #333;
+    font-size: 36px;
+    margin-bottom: 20px;
 }
 
 .input-container {
+    display: flex; /* Exibe os elementos em linha (um ao lado do outro) */
+    align-items: center; /* Alinha os elementos verticalmente ao centro */
+    justify-content: center; /* Centraliza os elementos horizontalmente */
     margin-bottom: 20px;
 }
 
 .input-container input {
     padding: 10px;
+    font-size: 16px;
     margin-right: 10px;
-    width: 100px;
     text-align: center;
+    width: 80px;
+}
+
+.input-container span {
+    font-size: 24px;
+    vertical-align: middle;
+}
+
+.countdown-container {
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#activity-title {
+    font-size: 36px; /* Tamanho maior para o título da atividade */
+    margin-bottom: 10px;
+}
+
+#timer {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.groups-container {
+    margin-top: 20px;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
 }
 
 button {
@@ -39,10 +95,3 @@ button {
 button:hover {
     background-color: #0056b3;
 }
-
-#timer {
-    font-size: 36px;
-    font-weight: bold;
-    margin-top: 20px;
-}
-
