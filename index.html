@@ -3,31 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador Regressivo com Grupos</title>
+    <title>Intro Dinâmica</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <img src="https://raw.githubusercontent.com/BrunoMont2023/contador_clubefinal/main/images/Logoclube.png" alt="Relógio" class="logo banner-image">
-        <h1>Contador Regressivo</h1>
-        <div class="input-container">
-            <input type="text" id="activity-name" placeholder="Nome da Atividade" oninput="updateTitle()">
-            <input type="number" id="hours" placeholder="Horas">
-            <span>:</span>
-            <input type="number" id="minutes" placeholder="Minutos">
-            <button onclick="startCountdown()">Iniciar</button>
-            <button onclick="pauseCountdown()">Pausar</button>
-            <button onclick="resumeCountdown()">Continuar</button>
-            <button onclick="resetCountdown()">Reiniciar</button>
-        </div>
-        <div class="groups-container">
-            <h2>Grupos</h2>
-            <div id="group-names-container"></div>
-        </div>
-        <div id="countdown-display" class="countdown-container">
-            <h2 id="activity-title"></h2>
-            <div id="timer">00:00:00</div>
-        </div>
+    <div class="intro-container">
+        <img src="https://raw.githubusercontent.com/BrunoMont2023/contador_clubefinal/main/images/Logoclube.png" alt="Imagem de Introdução">
+        <button id="enterButton">Entrar</button>
     </div>
 
     <script src="script.js"></script>
