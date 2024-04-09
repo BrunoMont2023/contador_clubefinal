@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     enterButton.addEventListener('click', function() {
         // Redirecionar para outra página ao clicar no botão
-        window.location.href = 'contadorpage.html'; // Substitua 'outra_pagina.html' pela URL desejada
+        window.location.href = 'https://github.com/BrunoMont2023/contador_clubefinal/blob/main/contadorpage.html'; // Substitua 'outra_pagina.html' pela URL desejada
     });
 });
 // scripts.js (arquivo compartilhado entre páginas)
