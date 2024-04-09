@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Atividade</title>
+    <link rel="stylesheet" href="styles_contadorpage.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Contador de Atividade</h1>
+        <div>
+            <label for="horas">Horas:</label>
+            <input type="number" id="horas" min="0" value="0">
+        </div>
+        <div>
+            <label for="minutos">Minutos:</label>
+            <input type="number" id="minutos" min="0" max="59" value="1">
+        </div>
+        <button onclick="personalizarTempo()">Personalizar Tempo</button>
+    </div>
+
+    <div class="container">
+        <h2>Contador Geral da Atividade</h2>
+        <div>
+            Tempo Restante:
+            <span id="contadorAtividade" class="contador">00:00:00</span>
+        </div>
+        <button onclick="iniciarOuPausarContador()">Iniciar/Pausar Atividade</button>
+        <button onclick="resetarContador()">Resetar Atividade</button>
+    </div>
+
+    <div class="container">
+        <h2>Grupos</h2>
+        <input type="text" id="nomeGrupo" placeholder="Nome do Grupo">
+        <button onclick="adicionarGrupo()">Adicionar Grupo</button>
+        <div id="listaGrupos"></div>
+    </div>
+
+    <div class="container">
+        <h2>Tabela de Pontuações</h2>
+        <table id="tabelaGrupos">
+            <thead>
+                <tr>
+                    <th>Posição</th>
+                    <th>Nome do Grupo</th>
+                    <th>Tempo</th>
+                    <th>Pontuação</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <button onclick="exportarDados()">Exportar Dados</button>
+    </div>
+
+    <script src="script_contadorpage.js"></script>
+</body>
+</html>
