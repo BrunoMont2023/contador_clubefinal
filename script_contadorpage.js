@@ -68,7 +68,8 @@ function adicionarGrupo() {
         const novoGrupo = {
             nome: nomeGrupo,
             tempo: 0,
-            intervalo: null
+            intervalo: null,
+            pontuacao: 0
         };
 
         grupos.push(novoGrupo);
@@ -94,10 +95,6 @@ function pausarContadoresIndividuais(index) {
         if (grupo.intervalo) {
             clearInterval(grupo.intervalo);
             grupo.intervalo = null;
-
-            // Calcular pontuação com base no tempo e posição
-            grupo.pontuacao = calcularPontuacao(grupo.tempo);
-            atualizarTabelaPontuacoes();
         }
     }
 }
@@ -107,22 +104,6 @@ function resetarContadoresIndividuais() {
         grupo.tempo = 0;
         document.getElementById(`contadorGrupo${index}`).textContent = '00:00:00';
     });
-}
-
-function calcularPontuacao(tempo) {
-    // Definir a pontuação base máxima
-    const pontuacaoBase = 1000;
-
-    // Ordenar os grupos pelo tempo gasto (menor tempo primeiro)
-    grupos.sort((a, b) => a.tempo - b.tempo);
-
-    // Encontrar a posição do grupo com o tempo correspondente
-    const posicao = grupos.findIndex(grupo => grupo.tempo === tempo);
-
-    // Calcular a pontuação com base na posição (menor tempo => maior pontuação)
-    const pontuacao = pontuacaoBase - posicao * 100;
-
-    return pontuacao;
 }
 
 function atualizarListaGrupos() {
@@ -145,19 +126,15 @@ function atualizarTabelaPontuacoes() {
     const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
     tbody.innerHTML = '';
 
-    // Ordenar grupos pelo tempo gasto (menor tempo primeiro)
-    grupos.sort((a, b) => a.tempo - b.tempo);
+    // Ordenar grupos por pontuação (maior para menor)
+    grupos.sort((a, b) => b.pontuacao - a.pontuacao);
 
-    // Atualizar a tabela de pontuações com os dados ordenados
     grupos.forEach((grupo, index) => {
-        const posicao = index + 1;
-        const pontuacao = calcularPontuacao(grupo.tempo);
-
         const newRow = tbody.insertRow();
-        newRow.insertCell(0).textContent = posicao;
+        newRow.insertCell(0).textContent = index + 1;
         newRow.insertCell(1).textContent = grupo.nome;
         newRow.insertCell(2).textContent = formatarTempo(grupo.tempo);
-        newRow.insertCell(3).textContent = pontuacao;
+        newRow.insertCell(3).textContent = grupo.pontuacao;
     });
 }
 
@@ -169,7 +146,7 @@ function exportarDados() {
         Posição: index + 1,
         'Nome do Grupo': grupo.nome,
         Tempo: formatarTempo(grupo.tempo),
-        Pontuação: calcularPontuacao(grupo.tempo)
+        Pontuação: grupo.pontuacao
     }));
 
     // Estilos CSS para a tabela
