@@ -97,10 +97,12 @@ function pausarContadoresIndividuais(index) {
         if (grupo.intervalo) {
             clearInterval(grupo.intervalo);
             grupo.pausado = true;
-
-            // Calcular pontuação com base no tempo
-            grupo.pontuacao = calcularPontuacao(grupo.tempo);
-            atualizarTabelaPontuacoes();
+        } else {
+            grupo.intervalo = setInterval(() => {
+                grupo.tempo++;
+                document.getElementById(`contadorGrupo${index}`).textContent = formatarTempo(grupo.tempo);
+            }, 1000);
+            grupo.pausado = false;
         }
     }
 }
@@ -147,19 +149,22 @@ function atualizarTabelaPontuacoes() {
         newRow.insertCell(0).textContent = index + 1;
         newRow.insertCell(1).textContent = grupo.nome;
         newRow.insertCell(2).textContent = formatarTempo(grupo.tempo);
-        newRow.insertCell(3).textContent = grupo.pontuacao;
+        newRow.insertCell(3).textContent = calcularPontuacao(grupo.tempo);
     });
 }
 
 document.addEventListener('DOMContentLoaded', atualizarListaGrupos);
 
 function exportarDados() {
+    // Atualizar tabela de pontuações antes de exportar
+    atualizarTabelaPontuacoes();
+
     // Preparar os dados como uma matriz de objetos
     const dados = grupos.map((grupo, index) => ({
         Posição: index + 1,
         'Nome do Grupo': grupo.nome,
         Tempo: formatarTempo(grupo.tempo),
-        Pontuação: grupo.pontuacao
+        Pontuação: calcularPontuacao(grupo.tempo)
     }));
 
     // Estilos CSS para a tabela
