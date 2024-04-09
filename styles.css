@@ -1,103 +1,32 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f8f8;
-    color: #333;
-    text-align: center;
+body, html {
     margin: 0;
     padding: 0;
+    height: 100%;
+    overflow: hidden;
 }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.logo {
+.intro-container {
     width: 100%;
-    max-height: 200px;
-    margin-bottom: 20px;
-}
-
-.banner-image {
-    object-fit: cover;
-}
-
-h1 {
-    font-size: 36px;
-    margin-bottom: 20px;
-}
-
-.input-container {
+    height: 100%;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
-    margin-bottom: 20px;
+    align-items: center;
+    background-color: black; /* Cor de fundo para a intro */
 }
 
-.input-container input {
-    padding: 10px;
-    font-size: 16px;
-    margin-right: 10px;
-    text-align: center;
-    width: 80px;
-}
-
-.input-container span {
-    font-size: 24px;
-    vertical-align: middle;
-}
-
-.countdown-container {
-    border: 2px solid #007bff;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 20px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-#activity-title {
-    font-size: 36px;
-    margin-bottom: 10px;
-}
-
-#timer {
-    font-size: 48px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-.groups-container {
-    margin-top: 20px;
-}
-
-.group-name {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-textarea {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
+img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Para ajustar a imagem */
 }
 
 button {
+    margin-top: 20px;
     padding: 10px 20px;
     font-size: 16px;
-    cursor: pointer;
     background-color: #007bff;
-    color: #fff;
+    color: white;
     border: none;
-    border-radius: 4px;
-    margin-right: 10px;
-}
-
-button:hover {
-    background-color: #0056b3;
+    cursor: pointer;
 }
