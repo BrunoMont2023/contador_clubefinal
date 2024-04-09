@@ -99,7 +99,7 @@ function pausarContadoresIndividuais(index) {
             grupo.pausado = true;
 
             // Calcular pontuação com base no tempo e posição
-            grupo.pontuacao = calcularPontuacao(grupo.tempo, index);
+            grupo.pontuacao = calcularPontuacao(grupo.tempo);
             atualizarTabelaPontuacoes();
         }
     }
@@ -113,13 +113,9 @@ function resetarContadoresIndividuais() {
     });
 }
 
-function calcularPontuacao(tempoPausa, index) {
-    const pontuacoes = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100];
-
-    // Atribuir pontuação com base na posição (index)
-    const pontuacao = pontuacoes[index] || 0;
-
-    return pontuacao;
+function calcularPontuacao(tempo) {
+    // Atribuir pontuação com base no tempo (quanto menor o tempo, maior a pontuação)
+    return tempoTotalAtividade - tempo;
 }
 
 function atualizarListaGrupos() {
@@ -142,15 +138,12 @@ function atualizarTabelaPontuacoes() {
     const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
     tbody.innerHTML = '';
 
-    // Filtrar grupos que foram pausados e têm pontuação
-    const gruposPausadosComPontuacao = grupos.filter(grupo => grupo.pausado && grupo.pontuacao > 0);
+    // Ordenar grupos por pontuação (maior pontuação primeiro)
+    grupos.sort((a, b) => b.pontuacao - a.pontuacao);
 
-    // Ordenar grupos pausados com pontuação por pontuação (maior para menor)
-    gruposPausadosComPontuacao.sort((a, b) => b.pontuacao - a.pontuacao);
-
-    gruposPausadosComPontuacao.forEach((grupo, posicao) => {
+    grupos.forEach((grupo, index) => {
         const newRow = tbody.insertRow();
-        newRow.insertCell(0).textContent = posicao + 1;
+        newRow.insertCell(0).textContent = index + 1;
         newRow.insertCell(1).textContent = grupo.nome;
         newRow.insertCell(2).textContent = formatarTempo(grupo.tempo);
         newRow.insertCell(3).textContent = grupo.pontuacao;
@@ -160,9 +153,6 @@ function atualizarTabelaPontuacoes() {
 document.addEventListener('DOMContentLoaded', atualizarListaGrupos);
 
 function exportarDados() {
-    // Atualizar a tabela de pontuações antes de exportar os dados
-    atualizarTabelaPontuacoes();
-
     // Preparar os dados como uma matriz de objetos
     const dados = grupos.map((grupo, index) => ({
         Posição: index + 1,
