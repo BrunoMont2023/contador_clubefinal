@@ -113,11 +113,11 @@ function calcularPontuacao(tempo) {
     // Ordenar os grupos pelo tempo gasto (menor tempo primeiro)
     grupos.sort((a, b) => a.tempo - b.tempo);
 
-    // Encontrar a posição do grupo atual na lista ordenada
+    // Encontrar a posição do grupo com o tempo correspondente
     const posicao = grupos.findIndex(grupo => grupo.tempo === tempo);
 
     // Atribuir pontuação com base na posição (menor tempo => maior pontuação)
-    const pontuacao = posicao >= 0 ? 1000 - (posicao * 100) : 0;
+    const pontuacao = (grupos.length - posicao) * 100;
 
     return pontuacao;
 }
@@ -158,8 +158,6 @@ function atualizarTabelaPontuacoes() {
         newRow.insertCell(3).textContent = pontuacao;
     });
 }
-
-document.addEventListener('DOMContentLoaded', atualizarListaGrupos);
 
 function exportarDados() {
     // Preparar os dados como uma matriz de objetos
