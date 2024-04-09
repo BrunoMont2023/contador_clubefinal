@@ -109,14 +109,19 @@ function resetarContadoresIndividuais() {
     });
 }
 
-function calcularPontuacao(tempoPausa, index) {
-    const pontuacoes = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100];
+function calcularPontuacao(tempo, index) {
+    // Ordenar os grupos pelo tempo gasto (menor tempo primeiro)
+    grupos.sort((a, b) => a.tempo - b.tempo);
 
-    // Atribuir pontuação com base na posição (index)
-    const pontuacao = pontuacoes[index] || 0;
+    // Encontrar a posição do grupo atual na lista ordenada
+    const posicao = grupos.findIndex(grupo => grupo.nome === grupos[index].nome);
+
+    // Atribuir pontuação com base na posição (menor tempo => maior pontuação)
+    const pontuacao = posicao >= 0 ? 1000 - (posicao * 100) : 0;
 
     return pontuacao;
 }
+
 
 function atualizarListaGrupos() {
     const listaGrupos = document.getElementById('listaGrupos');
