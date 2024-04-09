@@ -110,14 +110,17 @@ function resetarContadoresIndividuais() {
 }
 
 function calcularPontuacao(tempo) {
+    // Definir a pontuação base máxima
+    const pontuacaoBase = 1000;
+
     // Ordenar os grupos pelo tempo gasto (menor tempo primeiro)
     grupos.sort((a, b) => a.tempo - b.tempo);
 
     // Encontrar a posição do grupo com o tempo correspondente
     const posicao = grupos.findIndex(grupo => grupo.tempo === tempo);
 
-    // Atribuir pontuação com base na posição (menor tempo => maior pontuação)
-    const pontuacao = (grupos.length - posicao) * 100;
+    // Calcular a pontuação com base na posição (menor tempo => maior pontuação)
+    const pontuacao = pontuacaoBase - posicao * 100;
 
     return pontuacao;
 }
@@ -148,10 +151,10 @@ function atualizarTabelaPontuacoes() {
 
     // Atualizar a tabela de pontuações com os dados ordenados
     grupos.forEach((grupo, index) => {
-        const newRow = tbody.insertRow();
         const posicao = index + 1;
         const pontuacao = calcularPontuacao(grupo.tempo);
 
+        const newRow = tbody.insertRow();
         newRow.insertCell(0).textContent = posicao;
         newRow.insertCell(1).textContent = grupo.nome;
         newRow.insertCell(2).textContent = formatarTempo(grupo.tempo);
