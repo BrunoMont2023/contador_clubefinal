@@ -109,12 +109,12 @@ function resetarContadoresIndividuais() {
     });
 }
 
-function calcularPontuacao(tempo, index) {
+function calcularPontuacao(tempo) {
     // Ordenar os grupos pelo tempo gasto (menor tempo primeiro)
     grupos.sort((a, b) => a.tempo - b.tempo);
 
     // Encontrar a posição do grupo atual na lista ordenada
-    const posicao = grupos.findIndex(grupo => grupo.nome === grupos[index].nome);
+    const posicao = grupos.findIndex(grupo => grupo.tempo === tempo);
 
     // Atribuir pontuação com base na posição (menor tempo => maior pontuação)
     const pontuacao = posicao >= 0 ? 1000 - (posicao * 100) : 0;
@@ -143,15 +143,19 @@ function atualizarTabelaPontuacoes() {
     const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
     tbody.innerHTML = '';
 
-    // Ordenar grupos por pontuação (maior para menor)
-    grupos.sort((a, b) => b.pontuacao - a.pontuacao);
+    // Ordenar grupos pelo tempo gasto (menor tempo primeiro)
+    grupos.sort((a, b) => a.tempo - b.tempo);
 
+    // Atualizar a tabela de pontuações com os dados ordenados
     grupos.forEach((grupo, index) => {
         const newRow = tbody.insertRow();
-        newRow.insertCell(0).textContent = index + 1;
+        const posicao = index + 1;
+        const pontuacao = calcularPontuacao(grupo.tempo);
+
+        newRow.insertCell(0).textContent = posicao;
         newRow.insertCell(1).textContent = grupo.nome;
         newRow.insertCell(2).textContent = formatarTempo(grupo.tempo);
-        newRow.insertCell(3).textContent = grupo.pontuacao;
+        newRow.insertCell(3).textContent = pontuacao;
     });
 }
 
