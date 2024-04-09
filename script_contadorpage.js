@@ -69,7 +69,7 @@ function adicionarGrupo() {
             tempo: 0,
             intervalo: null,
             pontuacao: 0,
-            pausado: false // Flag para controlar se o grupo está pausado
+            pausado: false
         };
 
         grupos.push(novoGrupo);
@@ -98,7 +98,7 @@ function pausarContadoresIndividuais(index) {
             clearInterval(grupo.intervalo);
             grupo.pausado = true;
 
-            // Calcular pontuação com base no tempo e posição
+            // Calcular pontuação com base no tempo
             grupo.pontuacao = calcularPontuacao(grupo.tempo);
             atualizarTabelaPontuacoes();
         }
@@ -108,13 +108,14 @@ function pausarContadoresIndividuais(index) {
 function resetarContadoresIndividuais() {
     grupos.forEach((grupo, index) => {
         grupo.tempo = 0;
-        grupo.pausado = false; // Resetar flag de pausa
+        grupo.pontuacao = 0;
+        grupo.pausado = false;
         document.getElementById(`contadorGrupo${index}`).textContent = '00:00:00';
     });
 }
 
 function calcularPontuacao(tempo) {
-    // Atribuir pontuação com base no tempo (quanto menor o tempo, maior a pontuação)
+    // Quanto menor o tempo, maior a pontuação
     return tempoTotalAtividade - tempo;
 }
 
@@ -138,8 +139,8 @@ function atualizarTabelaPontuacoes() {
     const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
     tbody.innerHTML = '';
 
-    // Ordenar grupos por pontuação (maior pontuação primeiro)
-    grupos.sort((a, b) => b.pontuacao - a.pontuacao);
+    // Ordenar grupos por tempo (menor tempo primeiro)
+    grupos.sort((a, b) => a.tempo - b.tempo);
 
     grupos.forEach((grupo, index) => {
         const newRow = tbody.insertRow();
