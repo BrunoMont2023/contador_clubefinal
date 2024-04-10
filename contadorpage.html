@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Competition Timer</title>
-    <link rel="stylesheet" href="styles_contadorpage.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
@@ -18,9 +18,9 @@
             <label for="activityTime">Activity Time (minutes):</label>
             <input type="number" id="activityTime" min="1" placeholder="Enter time in minutes">
             <button onclick="startActivity()">Start Activity</button>
-            <button onclick="resetActivity()">Reset</button>
+            <button onclick="resetActivity()">Reset Activity</button>
         </div>
-        <div class="groups" id="groupsContainer">
+        <div id="groupsContainer">
             <!-- Groups will be dynamically added here -->
         </div>
         <div class="scoreboard">
@@ -41,6 +41,6 @@
         </div>
         <button onclick="exportData()">Export Data</button>
     </main>
-    <script src="script_contadorpage.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
