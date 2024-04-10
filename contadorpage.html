@@ -3,44 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Competition Timer</title>
-    <link rel="stylesheet" href="styles_contadorpage.css">
+    <title>Competição de Atividade</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Competition Timer</h1>
-        <img src="competition-header.jpg" alt="Competition Header Image">
+        <img src="logo.png" alt="Logo da Competição">
+        <h1>Competição de Atividade</h1>
     </header>
+
     <main>
-        <div class="controls">
-            <label for="activityName">Activity Name:</label>
-            <input type="text" id="activityName" placeholder="Enter activity name">
-            <label for="activityTime">Activity Time (minutes):</label>
-            <input type="number" id="activityTime" min="1" placeholder="Enter time in minutes">
-            <button onclick="startActivity()">Start Activity</button>
-            <button onclick="resetActivity()">Reset Activity</button>
+        <div id="activitySection" class="section">
+            <h2>Configuração da Atividade</h2>
+            <label for="activityName">Nome da Atividade:</label>
+            <input type="text" id="activityName"><br>
+            <label for="activityTime">Tempo da Atividade (minutos):</label>
+            <input type="number" id="activityTime" min="1"><br>
+            <button onclick="startActivity()">Iniciar Atividade</button>
         </div>
-        <div id="groupsContainer">
-            <!-- Groups will be dynamically added here -->
+
+        <div id="groupSection" class="section">
+            <h2>Gerenciar Grupos</h2>
+            <input type="text" id="groupName" placeholder="Nome do Grupo">
+            <button onclick="addGroup()">Adicionar Grupo</button>
+            <div id="groups"></div>
         </div>
-        <div class="scoreboard">
-            <h2>Scoreboard</h2>
+
+        <div id="scoreSection" class="section">
+            <h2>Tabela de Pontuações</h2>
             <table id="scoreTable">
                 <thead>
                     <tr>
-                        <th>Position</th>
-                        <th>Group Name</th>
-                        <th>Time Taken</th>
-                        <th>Score</th>
+                        <th>Posição</th>
+                        <th>Nome do Grupo</th>
+                        <th>Tempo de Conclusão</th>
+                        <th>Pontuação</th>
                     </tr>
                 </thead>
-                <tbody id="scoreboardBody">
-                    <!-- Scoreboard data will be dynamically added here -->
-                </tbody>
+                <tbody id="scoreBody"></tbody>
             </table>
+            <button onclick="exportToExcel()">Exportar Dados</button>
         </div>
-        <button onclick="exportData()">Export Data</button>
     </main>
-    <script src="script_contadorpage.js"></script>
+
+    <script src="script.js"></script>
 </body>
 </html>
