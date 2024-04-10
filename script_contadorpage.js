@@ -108,13 +108,22 @@ function pausarContadoresIndividuais(index) {
     }
 }
 
-function resetarContadoresIndividuais() {
+function iniciarContadoresIndividuais() {
     grupos.forEach((grupo, index) => {
-        grupo.tempo = 0;
-        document.getElementById(`contadorGrupo${index}`).textContent = '00:00:00';
-        grupo.concluido = false; // Marcar como não concluído ao resetar
+        if (!grupo.concluido) { // Verificar se o grupo ainda não concluiu a atividade
+            grupo.intervalo = setInterval(() => {
+                grupo.tempo++;
+                document.getElementById(`contadorGrupo${index}`).textContent = formatarTempo(grupo.tempo);
+
+                if (grupo.tempo >= tempoTotalAtividade) {
+                    grupo.concluido = true;
+                    calcularPontuacao(); // Recalcular pontuação ao concluir
+                }
+            }, 1000);
+        }
     });
 }
+
 
 function calcularPontuacao() {
     const pontuacoes = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100];
