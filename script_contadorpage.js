@@ -1,5 +1,6 @@
 let groups = [];
-let scoreboard = [];
+let timerInterval = null;
+let activityTime = 0;
 
 function addGroup() {
     const groupName = prompt('Enter group name:');
@@ -28,19 +29,28 @@ function renderGroups() {
 }
 
 function startActivity() {
-    const activityTime = parseInt(document.getElementById('activityTime').value);
-    if (activityTime && activityTime > 0) {
-        groups.forEach((group, index) => {
-            group.intervalId = setInterval(() => {
-                group.timeTaken++;
-                const timeElement = document.getElementById(`groupTime${index}`);
-                timeElement.textContent = formatTime(group.timeTaken);
-            }, 1000);
-        });
-        setTimeout(endActivity, activityTime * 60000); // End activity after specified minutes
-    } else {
+    activityTime = parseInt(document.getElementById('activityTime').value);
+    if (!activityTime || activityTime <= 0) {
         alert('Please enter a valid activity time (minutes).');
+        return;
     }
+    groups.forEach((group, index) => {
+        group.intervalId = setInterval(() => {
+            group.timeTaken++;
+            const timeElement = document.getElementById(`groupTime${index}`);
+            timeElement.textContent = formatTime(group.timeTaken);
+        }, 1000);
+    });
+    timerInterval = setTimeout(endActivity, activityTime * 60000);
+}
+
+function resetActivity() {
+    clearTimeout(timerInterval);
+    groups.forEach(group => {
+        clearInterval(group.intervalId);
+        group.timeTaken = 0;
+    });
+    renderGroups();
 }
 
 function endActivity() {
@@ -51,10 +61,10 @@ function endActivity() {
 }
 
 function updateScoreboard() {
-    scoreboard = groups.slice().sort((a, b) => a.timeTaken - b.timeTaken);
     const scoreboardBody = document.getElementById('scoreboardBody');
     scoreboardBody.innerHTML = '';
-    scoreboard.forEach((group, index) => {
+    const sortedGroups = groups.slice().sort((a, b) => a.timeTaken - b.timeTaken);
+    sortedGroups.forEach((group, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${index + 1}</td>
@@ -66,15 +76,15 @@ function updateScoreboard() {
     });
 }
 
-function calculateScore(timeTaken) {
-    // Customize scoring logic as needed
-    return Math.floor(100000 / timeTaken);
-}
-
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+}
+
+function calculateScore(timeTaken) {
+    // Customize scoring logic here (e.g., based on time taken)
+    return Math.floor(100000 / timeTaken);
 }
 
 document.addEventListener('DOMContentLoaded', renderGroups);
