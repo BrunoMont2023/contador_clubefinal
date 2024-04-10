@@ -3,50 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Competição de Atividades</title>
-    <link rel="stylesheet" href="styles_contadorpage.css">
+    <title>Competição</title>
 </head>
 <body>
-    <header>
-        <img src="https://raw.githubusercontent.com/BrunoMont2023/contador_clubefinal/main/images/Logoclube.png" alt="Logo da Competição">
-        <h1>Competição de Atividades</h1>
-    </header>
+    <h1>Competição</h1>
+    <label for="activityName">Nome da Atividade:</label>
+    <input type="text" id="activityName">
+    <label for="activityHours">Horas:</label>
+    <input type="number" id="activityHours" min="0">
+    <label for="activityMinutes">Minutos:</label>
+    <input type="number" id="activityMinutes" min="0">
+    <button onclick="startActivity()">Iniciar Atividade</button>
 
-    <main>
-        <section id="activitySection" class="section">
-            <h2>Configuração da Atividade</h2>
-            <label for="activityName">Nome da Atividade:</label>
-            <input type="text" id="activityName"><br>
-            <label for="activityHours">Horas:</label>
-            <input type="number" id="activityHours" min="0" value="0">
-            <label for="activityMinutes">Minutos:</label>
-            <input type="number" id="activityMinutes" min="1" value="1">
-            <button onclick="startActivity()">Iniciar Atividade</button>
-        </section>
+    <hr>
 
-        <section id="groupSection" class="section">
-            <h2>Gerenciar Grupos</h2>
-            <input type="text" id="groupName" placeholder="Nome do Grupo">
-            <button onclick="addGroup()">Adicionar Grupo</button>
-            <div id="groups"></div>
-        </section>
+    <label for="groupName">Nome do Grupo:</label>
+    <input type="text" id="groupName">
+    <button onclick="addGroup()">Adicionar Grupo</button>
 
-        <section id="scoreSection" class="section">
-            <h2>Tabela de Pontuações</h2>
-            <table id="scoreTable">
-                <thead>
-                    <tr>
-                        <th>Posição</th>
-                        <th>Nome do Grupo</th>
-                        <th>Tempo de Conclusão</th>
-                        <th>Pontuação</th>
-                    </tr>
-                </thead>
-                <tbody id="scoreBody"></tbody>
-            </table>
-            <button onclick="exportToExcel()">Exportar Dados</button>
-        </section>
-    </main>
+    <div id="groups"></div>
+
+    <hr>
+
+    <h2>Tabela de Pontuações</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Posição</th>
+                <th>Nome do Grupo</th>
+                <th>Tempo de Conclusão</th>
+                <th>Pontuação</th>
+            </tr>
+        </thead>
+        <tbody id="scoreBody"></tbody>
+    </table>
+
+    <button onclick="exportToExcel()">Exportar Dados</button>
 
     <script src="script_contadorpage.js"></script>
 </body>
