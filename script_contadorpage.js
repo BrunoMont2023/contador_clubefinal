@@ -1,6 +1,5 @@
-let activityName = '';
-let activitySeconds = 0;
-let countdownInterval = null;
+let activityTimeInSeconds = 0;
+let activityTimerInterval = null;
 let groups = [];
 
 function formatTime(seconds) {
@@ -11,109 +10,110 @@ function formatTime(seconds) {
 }
 
 function startActivity() {
-    const hours = parseInt(document.getElementById('activityHours').value, 10) || 0;
-    const minutes = parseInt(document.getElementById('activityMinutes').value, 10) || 0;
-    activitySeconds = hours * 3600 + minutes * 60;
+    const activityName = document.getElementById('activityName').value.trim();
+    const activityHours = parseInt(document.getElementById('activityHours').value) || 0;
+    const activityMinutes = parseInt(document.getElementById('activityMinutes').value) || 0;
+    activityTimeInSeconds = activityHours * 3600 + activityMinutes * 60;
 
-    activityName = document.getElementById('activityName').value.trim();
-    if (activityName && activitySeconds > 0) {
-        startCountdown();
+    if (activityName && activityTimeInSeconds > 0) {
+        document.getElementById('activityTimer').textContent = formatTime(activityTimeInSeconds);
+        startActivityTimer();
     } else {
-        alert('Por favor, preencha o nome da atividade e o tempo válido.');
+        alert("Por favor, insira um nome e um tempo válido para a atividade.");
     }
 }
 
-function startCountdown() {
-    clearInterval(countdownInterval);
-    countdownInterval = setInterval(() => {
-        activitySeconds--;
-        if (activitySeconds < 0) {
-            clearInterval(countdownInterval);
-            alert('Tempo da atividade esgotado!');
-            activitySeconds = 0;
+function startActivityTimer() {
+    activityTimerInterval = setInterval(() => {
+        activityTimeInSeconds--;
+        document.getElementById('activityTimer').textContent = formatTime(activityTimeInSeconds);
+
+        if (activityTimeInSeconds <= 0) {
+            clearInterval(activityTimerInterval);
+            alert("Tempo da atividade esgotado!");
         }
-        renderGroups();
     }, 1000);
 }
 
 function addGroup() {
     const groupName = document.getElementById('groupName').value.trim();
+
     if (groupName) {
-        groups.push({ name: groupName, completionTime: activitySeconds, currentTime: activitySeconds, interval: null });
-        renderGroups();
+        const group = {
+            name: groupName,
+            timeElapsed: 0,
+            timerInterval: null
+        };
+        groups.push(group);
+        updateGroupTimers();
         document.getElementById('groupName').value = '';
     } else {
-        alert('Por favor, insira um nome válido para o grupo.');
+        alert("Por favor, insira um nome válido para o grupo.");
     }
 }
 
-function toggleGroupTimer(index) {
-    const group = groups[index];
-    if (!group.interval) {
-        group.interval = setInterval(() => {
-            group.currentTime--;
-            if (group.currentTime < 0) {
-                clearInterval(group.interval);
-                alert(`Grupo "${group.name}" terminou a atividade!`);
-                group.currentTime = 0;
-            }
-            renderGroups();
-        }, 1000);
-    } else {
-        clearInterval(group.interval);
-        group.interval = null;
-    }
-}
+function updateGroupTimers() {
+    const groupTimersContainer = document.getElementById('groupTimers');
+    groupTimersContainer.innerHTML = '';
 
-function renderGroups() {
-    const groupsContainer = document.getElementById('groups');
-    groupsContainer.innerHTML = '';
     groups.forEach((group, index) => {
-        const groupElement = document.createElement('div');
-        groupElement.innerHTML = `
-            <div>${group.name}: ${formatTime(group.currentTime)}</div>
-            <button onclick="toggleGroupTimer(${index})">${group.interval ? 'Pausar' : 'Iniciar'}</button>
-        `;
-        groupsContainer.appendChild(groupElement);
+        const groupTimerElement = document.createElement('div');
+        groupTimerElement.classList.add('groupTimer');
+        groupTimerElement.textContent = `${group.name}: ${formatTime(group.timeElapsed)}`;
+
+        const pauseButton = document.createElement('button');
+        pauseButton.textContent = 'Pausar';
+        pauseButton.onclick = () => pauseGroupTimer(index);
+
+        groupTimerElement.appendChild(pauseButton);
+        groupTimersContainer.appendChild(groupTimerElement);
+
+        startGroupTimer(index);
     });
-    updateScoreTable();
 }
 
-function updateScoreTable() {
-    const scoreBody = document.getElementById('scoreBody');
-    scoreBody.innerHTML = '';
-    const sortedGroups = [...groups];
-    sortedGroups.sort((a, b) => a.completionTime - b.completionTime);
+function startGroupTimer(index) {
+    const group = groups[index];
+    if (group && !group.timerInterval) {
+        group.timerInterval = setInterval(() => {
+            group.timeElapsed++;
+            updateGroupTimers();
+        }, 1000);
+    }
+}
 
-    sortedGroups.forEach((group, index) => {
-        const position = index + 1;
-        const points = 1000 - (position - 1) * 100;
-        const row = `<tr>
-            <td>${position}</td>
-            <td>${group.name}</td>
-            <td>${formatTime(group.completionTime)}</td>
-            <td>${points}</td>
-        </tr>`;
-        scoreBody.innerHTML += row;
-    });
+function pauseGroupTimer(index) {
+    const group = groups[index];
+    if (group && group.timerInterval) {
+        clearInterval(group.timerInterval);
+        group.timerInterval = null;
+        updateGroupTimers();
+    }
 }
 
 function exportToExcel() {
-    const data = [['Posição', 'Nome do Grupo', 'Tempo de Conclusão', 'Pontuação']];
+    const scoreBody = document.getElementById('scoreBody');
+    scoreBody.innerHTML = '';
+
+    // Sort groups by timeElapsed (ascending)
+    groups.sort((a, b) => a.timeElapsed - b.timeElapsed);
+
     groups.forEach((group, index) => {
-        const position = index + 1;
-        const points = 1000 - (position - 1) * 100;
-        data.push([position, group.name, formatTime(group.completionTime), points]);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${group.name}</td>
+            <td>${formatTime(group.timeElapsed)}</td>
+            <td>${calculateScore(index)}</td>
+        `;
+        scoreBody.appendChild(row);
     });
+}
 
-    const csvContent = data.map(row => row.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `${activityName}_pontuacoes.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+function calculateScore(position) {
+    const scores = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100];
+    if (position < scores.length) {
+        return scores[position];
+    }
+    return 0;
 }
