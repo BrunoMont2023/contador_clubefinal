@@ -1,60 +1,24 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
-    margin: 0;
-    padding: 0;
+    padding: 20px;
 }
 
 header {
     text-align: center;
-    background-color: #007bff;
-    padding: 20px;
-    color: #fff;
-}
-
-header img {
-    display: block;
-    margin: 20px auto;
-    max-width: 80%;
-}
-
-main {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.controls {
     margin-bottom: 20px;
 }
 
-.controls label {
-    font-weight: bold;
-}
-
-.controls input, .controls button {
-    margin-right: 10px;
-}
-
-.groups {
-    margin-bottom: 20px;
-}
-
-.group {
-    border: 2px solid #007bff;
-    padding: 10px;
+h1 {
+    font-size: 32px;
     margin-bottom: 10px;
 }
 
-.scoreboard {
-    margin-bottom: 20px;
+.section {
+    margin-bottom: 30px;
 }
 
-.scoreboard h2 {
-    text-align: center;
-    color: #007bff;
+input, button {
+    margin-bottom: 10px;
 }
 
 table {
@@ -62,29 +26,12 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+table, th, td {
     border: 1px solid #ddd;
     padding: 8px;
-    text-align: left;
 }
 
 th {
     background-color: #007bff;
-    color: #fff;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-button {
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
+    color: white;
 }
