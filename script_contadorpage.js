@@ -39,11 +39,29 @@ function startCountdown() {
 function addGroup() {
     const groupName = document.getElementById('groupName').value.trim();
     if (groupName) {
-        groups.push({ name: groupName, completionTime: activitySeconds });
+        groups.push({ name: groupName, completionTime: activitySeconds, currentTime: activitySeconds, interval: null });
         renderGroups();
         document.getElementById('groupName').value = '';
     } else {
         alert('Por favor, insira um nome válido para o grupo.');
+    }
+}
+
+function toggleGroupTimer(index) {
+    const group = groups[index];
+    if (!group.interval) {
+        group.interval = setInterval(() => {
+            group.currentTime--;
+            if (group.currentTime < 0) {
+                clearInterval(group.interval);
+                alert(`Grupo "${group.name}" terminou a atividade!`);
+                group.currentTime = 0;
+            }
+            renderGroups();
+        }, 1000);
+    } else {
+        clearInterval(group.interval);
+        group.interval = null;
     }
 }
 
@@ -52,7 +70,10 @@ function renderGroups() {
     groupsContainer.innerHTML = '';
     groups.forEach((group, index) => {
         const groupElement = document.createElement('div');
-        groupElement.textContent = `${group.name}: ${formatTime(group.completionTime)}`;
+        groupElement.innerHTML = `
+            <div>${group.name}: ${formatTime(group.currentTime)}</div>
+            <button onclick="toggleGroupTimer(${index})">${group.interval ? 'Pausar' : 'Iniciar'}</button>
+        `;
         groupsContainer.appendChild(groupElement);
     });
     updateScoreTable();
