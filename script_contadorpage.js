@@ -59,15 +59,10 @@ function resetarContador() {
     tempoTotalAtividade = 0;
     document.getElementById('contadorAtividade').textContent = '00:00:00';
     resetarContadoresIndividuais();
-    limparTabelaPontuacoes(); // Limpar a tabela de pontuações
-}
 
-function limparTabelaPontuacoes() {
-    const tabelaGrupos = document.getElementById('tabelaGrupos');
-    const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
-    tbody.innerHTML = ''; // Limpar o conteúdo da tabela
+    // Limpar a tabela de pontuações ao resetar a atividade
+    limparTabelaPontuacoes();
 }
-
 
 function adicionarGrupo() {
     const nomeGrupo = document.getElementById('nomeGrupo').value.trim();
@@ -76,8 +71,7 @@ function adicionarGrupo() {
         const novoGrupo = {
             nome: nomeGrupo,
             tempo: 0,
-            intervalo: null,
-            pausado: false
+            intervalo: null
         };
 
         grupos.push(novoGrupo);
@@ -91,9 +85,13 @@ function adicionarGrupo() {
 function iniciarContadoresIndividuais() {
     grupos.forEach((grupo, index) => {
         grupo.intervalo = setInterval(() => {
-            if (!grupo.pausado) {
-                grupo.tempo++;
-                document.getElementById(`contadorGrupo${index}`).textContent = formatarTempo(grupo.tempo);
+            grupo.tempo++;
+            document.getElementById(`contadorGrupo${index}`).textContent = formatarTempo(grupo.tempo);
+
+            // Atualizar a tabela de pontuações à medida que cada grupo completa a atividade
+            if (grupo.tempo >= tempoTotalAtividade) {
+                pausarContadoresIndividuais(index); // Pausar o contador individual
+                atualizarTabelaPontuacoes(); // Atualizar a tabela de pontuações
             }
         }, 1000);
     });
@@ -102,104 +100,63 @@ function iniciarContadoresIndividuais() {
 function pausarContadoresIndividuais(index) {
     if (index >= 0 && index < grupos.length) {
         const grupo = grupos[index];
-        grupo.pausado = !grupo.pausado;
+        if (grupo.intervalo) {
+            clearInterval(grupo.intervalo);
+            grupo.intervalo = null;
+
+            // Calcular pontuação com base no tempo e posição
+            grupo.pontuacao = calcularPontuacao(grupo.tempo);
+        }
     }
 }
 
 function resetarContadoresIndividuais() {
     grupos.forEach((grupo, index) => {
         grupo.tempo = 0;
-        grupo.pausado = false;
         document.getElementById(`contadorGrupo${index}`).textContent = '00:00:00';
     });
 }
 
-// Função atualizada para calcular a pontuação com base no tempo
 function calcularPontuacao(tempo) {
-    // Aqui você pode ajustar a lógica de pontuação conforme necessário
-    // Por exemplo, se quiser que o grupo com menos tempo tenha mais pontos,
-    // você pode inverter a lógica de cálculo de pontuação.
-    return tempo > 0 ? 1000 / tempo : 0;
+    // Quanto menor o tempo, maior a pontuação
+    return tempoTotalAtividade > 0 ? Math.floor(1000 / tempo) : 0;
 }
 
-function atualizarListaGrupos() {
-    const listaGrupos = document.getElementById('listaGrupos');
-    listaGrupos.innerHTML = '';
-
-    grupos.forEach((grupo, index) => {
-        const divGrupo = document.createElement('div');
-        divGrupo.innerHTML = `
-            <strong>${grupo.nome}</strong>
-            <span id="contadorGrupo${index}" class="contador">00:00:00</span>
-            <button onclick="pausarContadoresIndividuais(${index})">Pausar/Retomar</button>
-        `;
-        listaGrupos.appendChild(divGrupo);
-    });
+function limparTabelaPontuacoes() {
+    const tabelaGrupos = document.getElementById('tabelaGrupos');
+    const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
+    tbody.innerHTML = ''; // Limpar o conteúdo da tabela
 }
 
 function atualizarTabelaPontuacoes() {
     const tabelaGrupos = document.getElementById('tabelaGrupos');
     const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
-
-    // Limpar o conteúdo atual da tabela
-    tbody.innerHTML = '';
+    tbody.innerHTML = ''; // Limpar o conteúdo da tabela
 
     // Ordenar grupos por tempo (menor tempo primeiro)
     grupos.sort((a, b) => a.tempo - b.tempo);
 
-    // Atribuir pontuações com base no tempo e posição
-    const pontuacoes = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100];
-
-    // Atualizar cada linha da tabela com os grupos e suas pontuações
+    // Atualizar a tabela com os grupos ordenados
     grupos.forEach((grupo, index) => {
         const newRow = tbody.insertRow();
-        const posicao = index + 1;
-        const pontuacao = calcularPontuacao(grupo.tempo);
-
-        newRow.insertCell(0).textContent = posicao;
+        newRow.insertCell(0).textContent = index + 1;
         newRow.insertCell(1).textContent = grupo.nome;
         newRow.insertCell(2).textContent = formatarTempo(grupo.tempo);
-        newRow.insertCell(3).textContent = pontuacao;
-
-        // Atualizar pontuação do grupo
-        grupo.pontuacao = pontuacao;
-    });
-
-    // Reordenar grupos por pontuação (maior pontuação primeiro)
-    grupos.sort((a, b) => b.pontuacao - a.pontuacao);
-
-    // Atualizar classificação com base na nova ordem de pontuações
-    grupos.forEach((grupo, index) => {
-        const row = tbody.rows[index];
-        row.cells[0].textContent = index + 1; // Atualizar posição
+        newRow.insertCell(3).textContent = grupo.pontuacao;
     });
 }
 
-function grupoTerminouAtividade(index) {
-    if (index >= 0 && index < grupos.length) {
-        const grupo = grupos[index];
-        clearInterval(grupo.intervalo); // Parar contador individual do grupo
-        grupo.intervalo = null;
-
-        // Calcular pontuação com base no tempo e posição
-        grupo.pontuacao = calcularPontuacao(grupo.tempo);
-        
-        // Atualizar automaticamente a tabela de pontuações
-        atualizarTabelaPontuacoes();
-    }
-}
-
+document.addEventListener('DOMContentLoaded', () => {
+    atualizarListaGrupos();
+});
 
 function exportarDados() {
-    // Atualizar tabela de pontuações antes de exportar
-    atualizarTabelaPontuacoes();
-
     // Preparar os dados como uma matriz de objetos
     const dados = grupos.map((grupo, index) => ({
         Posição: index + 1,
         'Nome do Grupo': grupo.nome,
         Tempo: formatarTempo(grupo.tempo),
-        Pontuação: calcularPontuacao(grupo.tempo)
+        Pontuação: grupo.pontuacao
     }));
 
     // Estilos CSS para a tabela
