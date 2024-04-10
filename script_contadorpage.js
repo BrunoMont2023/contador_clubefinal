@@ -1,28 +1,41 @@
 let groups = [];
-let timerInterval = null;
-let activityTime = 0;
-
-function setActivityTime(minutes) {
-    document.getElementById('activityTime').value = minutes;
-}
 
 function startActivity() {
-    const activityName = document.getElementById('activityName').value;
-    activityTime = parseInt(document.getElementById('activityTime').value);
-    if (!activityTime || activityTime <= 0) {
+    const activityName = document.getElementById('activityName').value.trim();
+    const activityTime = parseInt(document.getElementById('activityTime').value, 10);
+    
+    if (!activityName) {
+        alert('Please enter a valid activity name.');
+        return;
+    }
+
+    if (isNaN(activityTime) || activityTime <= 0) {
         alert('Please enter a valid activity time (minutes).');
         return;
     }
-    document.getElementById('activityTitle').textContent = activityName || 'Activity Timer';
-    startCountdown(activityTime * 60); // Convert minutes to seconds
+
+    resetActivity();
+
+    // Create group
+    const newGroup = {
+        name: activityName,
+        timeTaken: 0,
+        intervalId: setInterval(() => {
+            newGroup.timeTaken++;
+            renderGroups();
+        }, 1000)
+    };
+
+    groups.push(newGroup);
     renderGroups();
+    startCountdown(activityTime * 60);
 }
 
 function startCountdown(totalSeconds) {
     let secondsRemaining = totalSeconds;
-    timerInterval = setInterval(() => {
+    const countdownElement = document.getElementById('countdown');
+    const timerInterval = setInterval(() => {
         secondsRemaining--;
-        const countdownElement = document.getElementById('countdown');
         countdownElement.textContent = `Time Remaining: ${formatTime(secondsRemaining)}`;
         if (secondsRemaining <= 0) {
             clearInterval(timerInterval);
@@ -34,19 +47,15 @@ function startCountdown(totalSeconds) {
 function renderGroups() {
     const groupsContainer = document.getElementById('groupsContainer');
     groupsContainer.innerHTML = '';
-    const groupName = prompt('Enter group name:');
-    if (groupName) {
-        groups.push({
-            name: groupName,
-            timeTaken: 0,
-            intervalId: setInterval(() => {
-                groups.forEach((group, index) => {
-                    group.timeTaken++;
-                    renderGroups();
-                });
-            }, 1000)
-        });
-    }
+    groups.forEach(group => {
+        const groupElement = document.createElement('div');
+        groupElement.classList.add('group');
+        groupElement.innerHTML = `
+            <h3>${group.name}</h3>
+            <p>Time taken: ${formatTime(group.timeTaken)}</p>
+        `;
+        groupsContainer.appendChild(groupElement);
+    });
 }
 
 function endActivity() {
@@ -59,7 +68,7 @@ function endActivity() {
 function updateScoreboard() {
     const scoreboardBody = document.getElementById('scoreboardBody');
     scoreboardBody.innerHTML = '';
-    const sortedGroups = groups.slice().sort((a, b) => a.timeTaken - b.timeTaken);
+    const sortedGroups = [...groups].sort((a, b) => a.timeTaken - b.timeTaken);
     sortedGroups.forEach((group, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -72,12 +81,6 @@ function updateScoreboard() {
     });
 }
 
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-}
-
 function calculateScore(position) {
     const maxScore = 1000;
     const decrement = 100;
@@ -87,13 +90,8 @@ function calculateScore(position) {
 function resetActivity() {
     clearInterval(timerInterval);
     groups = [];
-    activityTime = 0;
-    document.getElementById('activityName').value = '';
-    document.getElementById('activityTime').value = '';
-    document.getElementById('activityTitle').textContent = 'Activity Timer';
     document.getElementById('countdown').textContent = '';
-    document.getElementById('groupsContainer').innerHTML = '';
-    document.getElementById('scoreboardBody').innerHTML = '';
+    renderGroups();
 }
 
 function exportData() {
@@ -109,4 +107,10 @@ function exportData() {
 
     // Simulate exporting data (e.g., to Excel format)
     console.log(data);
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
