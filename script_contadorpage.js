@@ -1,7 +1,7 @@
 let groups = [];
+let scoreboard = [];
 let timerInterval = null;
 let totalTime = 0;
-let scoreboard = [];
 
 function addGroup() {
     const groupName = document.getElementById('groupName').value.trim();
@@ -59,25 +59,23 @@ function startGroupTimer(group) {
     group.interval = setInterval(() => {
         if (group.active) {
             group.time++;
+            document.getElementById(`groupTime${groups.indexOf(group)}`).textContent = formatTime(group.time);
         }
     }, 1000);
 }
 
-function pauseActivity() {
-    clearInterval(timerInterval);
-    groups.forEach(group => {
-        group.active = false;
+function pauseGroup(index) {
+    const group = groups[index];
+    if (group.interval) {
         clearInterval(group.interval);
-    });
-    updateScoreboard();
+        group.interval = null;
+        group.active = false;
+        updateScoreboard();
+    }
 }
 
 function endActivity() {
     clearInterval(timerInterval);
-    groups.forEach(group => {
-        group.active = false;
-        clearInterval(group.interval);
-    });
     updateScoreboard();
 }
 
@@ -86,22 +84,20 @@ function updateScoreboard() {
     const scoreboardBody = document.getElementById('scoreboardBody');
     scoreboardBody.innerHTML = '';
     scoreboard.forEach((group, index) => {
-        const row = scoreboardBody.insertRow();
-        row.insertCell(0).textContent = index + 1;
-        row.insertCell(1).textContent = group.name;
-        row.insertCell(2).textContent = formatTime(group.time);
-        row.insertCell(3).textContent = calculateScore(group.time);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${group.name}</td>
+            <td>${formatTime(group.time)}</td>
+            <td>${calculateScore(group.time)}</td>
+        `;
+        scoreboardBody.appendChild(row);
     });
 }
 
 function calculateScore(time) {
-    // Example scoring logic (customize as needed)
-    return 1000 - time; // Higher score for faster completion
-}
-
-function pauseGroup(index) {
-    const group = groups[index];
-    group.active = false;
+    // Example scoring logic (adjust as needed)
+    return Math.floor(100000 / time);
 }
 
 function formatTime(seconds) {
@@ -110,5 +106,3 @@ function formatTime(seconds) {
     const remainingSeconds = seconds % 60;
     return `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
-
-document.addEventListener('DOMContentLoaded', renderGroups);
