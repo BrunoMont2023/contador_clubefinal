@@ -4,6 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Competição</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        #activityTimer {
+            font-size: 64px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        #groupTimers {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .groupTimer {
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid black;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 80%;
+            max-width: 800px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <h1>Competição</h1>
@@ -15,13 +65,15 @@
     <input type="number" id="activityMinutes" min="0">
     <button onclick="startActivity()">Iniciar Atividade</button>
 
+    <div id="activityTimer">00:00:00</div>
+
     <hr>
 
     <label for="groupName">Nome do Grupo:</label>
     <input type="text" id="groupName">
     <button onclick="addGroup()">Adicionar Grupo</button>
 
-    <div id="groups"></div>
+    <div id="groupTimers"></div>
 
     <hr>
 
@@ -40,6 +92,6 @@
 
     <button onclick="exportToExcel()">Exportar Dados</button>
 
-    <script src="script_contadorpage.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
