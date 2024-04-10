@@ -59,6 +59,7 @@ function resetarContador() {
     tempoTotalAtividade = 0;
     document.getElementById('contadorAtividade').textContent = '00:00:00';
     resetarContadoresIndividuais();
+    limparTabelaPontuacoes(); // Limpar a tabela de pontuações ao resetar
 }
 
 function adicionarGrupo() {
@@ -69,7 +70,7 @@ function adicionarGrupo() {
             nome: nomeGrupo,
             tempo: 0,
             intervalo: null,
-            pausado: true // Começa pausado por padrão
+            concluido: false // Inicialmente não concluído
         };
 
         grupos.push(novoGrupo);
@@ -82,7 +83,7 @@ function adicionarGrupo() {
 
 function iniciarContadoresIndividuais() {
     grupos.forEach((grupo, index) => {
-        if (!grupo.pausado) {
+        if (!grupo.concluido) { // Iniciar apenas se não estiver concluído
             grupo.intervalo = setInterval(() => {
                 grupo.tempo++;
                 document.getElementById(`contadorGrupo${index}`).textContent = formatarTempo(grupo.tempo);
@@ -94,12 +95,15 @@ function iniciarContadoresIndividuais() {
 function pausarContadoresIndividuais(index) {
     if (index >= 0 && index < grupos.length) {
         const grupo = grupos[index];
-        if (grupo.intervalo) {
+        if (grupo.intervalo && !grupo.concluido) {
             clearInterval(grupo.intervalo);
             grupo.intervalo = null;
-            grupo.pausado = true; // Marcar como pausado
-            calcularPontuacao(grupo.tempo);
-            atualizarTabelaPontuacoes();
+            
+            // Verificar se o grupo concluiu a atividade
+            if (grupo.tempo >= tempoTotalAtividade) {
+                grupo.concluido = true;
+                calcularPontuacao(); // Recalcular pontuação ao concluir
+            }
         }
     }
 }
@@ -108,19 +112,22 @@ function resetarContadoresIndividuais() {
     grupos.forEach((grupo, index) => {
         grupo.tempo = 0;
         document.getElementById(`contadorGrupo${index}`).textContent = '00:00:00';
-        grupo.pausado = true; // Marcar como pausado ao resetar
+        grupo.concluido = false; // Marcar como não concluído ao resetar
     });
-    limparTabelaPontuacoes(); // Limpar a tabela ao resetar
 }
 
-function calcularPontuacao(tempoPausa) {
+function calcularPontuacao() {
     const pontuacoes = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100];
+    const gruposConcluidos = grupos.filter(grupo => grupo.concluido);
 
-    grupos.sort((a, b) => a.tempo - b.tempo); // Ordenar por tempo crescente
+    // Ordenar grupos concluídos por tempo (menor tempo primeiro)
+    gruposConcluidos.sort((a, b) => a.tempo - b.tempo);
 
-    grupos.forEach((grupo, index) => {
+    gruposConcluidos.forEach((grupo, index) => {
         grupo.pontuacao = pontuacoes[index] || 0; // Atribuir pontuação com base na posição
     });
+
+    atualizarTabelaPontuacoes(); // Atualizar a tabela de pontuações
 }
 
 function atualizarListaGrupos() {
@@ -149,7 +156,9 @@ function atualizarTabelaPontuacoes() {
     const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
     tbody.innerHTML = '';
 
-    grupos.forEach((grupo, index) => {
+    const gruposConcluidos = grupos.filter(grupo => grupo.concluido);
+
+    gruposConcluidos.forEach((grupo, index) => {
         const newRow = tbody.insertRow();
         newRow.insertCell(0).textContent = index + 1;
         newRow.insertCell(1).textContent = grupo.nome;
