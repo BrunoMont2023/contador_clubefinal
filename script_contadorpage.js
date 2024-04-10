@@ -51,6 +51,7 @@ function resetActivity() {
         group.timeTaken = 0;
     });
     renderGroups();
+    clearScoreboard();
 }
 
 function endActivity() {
@@ -74,6 +75,11 @@ function updateScoreboard() {
         `;
         scoreboardBody.appendChild(row);
     });
+}
+
+function clearScoreboard() {
+    const scoreboardBody = document.getElementById('scoreboardBody');
+    scoreboardBody.innerHTML = '';
 }
 
 function formatTime(seconds) {
