@@ -1,57 +1,42 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador de Atividade</title>
+    <title>Contador de Atividade em Grupos</title>
     <link rel="stylesheet" href="styles_contadorpage.css">
 </head>
 <body>
+    <h1>Contador de Atividade em Grupos</h1>
+
     <div class="container">
-        <h1>Contador de Atividade</h1>
         <div>
             <label for="horas">Horas:</label>
             <input type="number" id="horas" min="0" value="0">
-        </div>
-        <div>
             <label for="minutos">Minutos:</label>
-            <input type="number" id="minutos" min="0" max="59" value="1">
+            <input type="number" id="minutos" min="0" max="59" value="0">
+            <button onclick="personalizarTempo()">Definir Tempo</button>
+            <p>Tempo Total: <span id="contadorAtividade">00:00:00</span></p>
+            <button onclick="iniciarOuPausarContador()">Iniciar/Pausar Atividade</button>
+            <button onclick="resetarContador()">Resetar Atividade</button>
         </div>
-        <button onclick="personalizarTempo()">Personalizar Tempo</button>
-    </div>
 
-    <div class="container">
-        <h2>Contador Geral da Atividade</h2>
-        <div>
-            Tempo Restante:
-            <span id="contadorAtividade" class="contador">00:00:00</span>
-        </div>
-        <button onclick="iniciarOuPausarContador()">Iniciar/Pausar Atividade</button>
-        <button onclick="resetarContador()">Resetar Atividade</button>
-    </div>
-
-    <div class="container">
-        <h2>Grupos</h2>
-        <input type="text" id="nomeGrupo" placeholder="Nome do Grupo">
-        <button onclick="adicionarGrupo()">Adicionar Grupo</button>
         <div id="listaGrupos"></div>
     </div>
 
-    <div class="container">
-        <h2>Tabela de Pontuações</h2>
-        <table id="tabelaGrupos">
-            <thead>
-                <tr>
-                    <th>Posição</th>
-                    <th>Nome do Grupo</th>
-                    <th>Tempo</th>
-                    <th>Pontuação</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <button onclick="exportarDados()">Exportar Dados</button>
-    </div>
+    <table id="tabelaGrupos">
+        <thead>
+            <tr>
+                <th>Posição</th>
+                <th>Nome do Grupo</th>
+                <th>Tempo</th>
+                <th>Pontuação</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Conteúdo da tabela será preenchido dinamicamente -->
+        </tbody>
+    </table>
 
     <script src="script_contadorpage.js"></script>
 </body>
