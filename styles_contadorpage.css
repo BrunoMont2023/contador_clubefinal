@@ -1,7 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
 }
@@ -15,76 +14,54 @@ body {
 }
 
 h1 {
+    font-size: 36px;
     text-align: center;
-}
-
-.controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin-bottom: 20px;
 }
 
-.controls label {
+.header-image {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+.activity-controls {
+    margin-bottom: 20px;
+}
+
+.activity-controls label {
+    font-weight: bold;
+}
+
+.activity-controls input, .activity-controls button {
     margin-right: 10px;
 }
 
-.controls input[type="number"] {
-    width: 80px;
-    padding: 8px;
-    font-size: 16px;
-    text-align: center;
-}
-
-.controls button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    background-color: #007bff;
-    color: #fff;
-}
-
-.controls button:hover {
-    background-color: #0056b3;
-}
-
 .groups-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    margin-bottom: 20px;
 }
 
 .group {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 10px;
-    width: 200px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 2px solid #007bff;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
-.group h3 {
-    margin-top: 0;
-    font-size: 20px;
-}
-
-.group-info {
-    margin-top: 10px;
-    font-size: 18px;
+.countdown {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .scoreboard {
     width: 100%;
-    margin-top: 30px;
     border-collapse: collapse;
 }
 
 .scoreboard th, .scoreboard td {
     border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
+    padding: 8px;
 }
 
 .scoreboard th {
@@ -92,6 +69,19 @@ h1 {
     color: #fff;
 }
 
-.scoreboard tr:nth-child(even) {
+.scoreboard tbody tr:nth-child(even) {
     background-color: #f2f2f2;
+}
+
+button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
 }
