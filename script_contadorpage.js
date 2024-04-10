@@ -59,9 +59,6 @@ function renderGroups() {
 }
 
 function endActivity() {
-    groups.forEach(group => {
-        clearInterval(group.intervalId);
-    });
     updateScoreboard();
 }
 
@@ -88,7 +85,9 @@ function calculateScore(position) {
 }
 
 function resetActivity() {
-    clearInterval(timerInterval);
+    groups.forEach(group => {
+        clearInterval(group.intervalId);
+    });
     groups = [];
     document.getElementById('countdown').textContent = '';
     renderGroups();
