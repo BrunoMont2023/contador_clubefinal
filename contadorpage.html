@@ -3,89 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Competition Scoreboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        .container {
-            margin-top: 20px;
-        }
-        .group-input {
-            margin-bottom: 10px;
-        }
-        .group-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .group-box {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px;
-            width: 150px;
-        }
-        .group-box h3 {
-            margin-top: 0;
-        }
-        .scoreboard {
-            margin-top: 20px;
-            border-collapse: collapse;
-            width: 80%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .scoreboard th, .scoreboard td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        .scoreboard th {
-            background-color: #007bff;
-            color: white;
-        }
-        .scoreboard tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .btn {
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <title>Group Activity Timer</title>
+    <link rel="stylesheet" href="styles_contadorpage.css">
 </head>
 <body>
-    <h1>Competition Scoreboard</h1>
     <div class="container">
-        <div class="group-input">
-            <input type="text" id="groupName" placeholder="Enter group name">
-            <button onclick="addGroup()">Add Group</button>
+        <h1>Group Activity Timer</h1>
+        <div class="controls">
+            <label for="activityTime">Activity Time:</label>
+            <input type="number" id="activityTime" min="1" placeholder="Enter minutes">
+            <button onclick="startActivity()">Start Activity</button>
+            <button onclick="resetActivity()">Reset</button>
         </div>
-        <div class="group-container" id="groupContainer"></div>
-        <button onclick="startActivity()">Start Activity</button>
-        <button onclick="pauseActivity()">Pause Activity</button>
+        <div class="groups-container" id="groupsContainer"></div>
+        <table class="scoreboard" id="scoreboard">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Group Name</th>
+                    <th>Time Taken</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="scoreboardBody"></tbody>
+        </table>
     </div>
-    <table class="scoreboard" id="scoreboard">
-        <thead>
-            <tr>
-                <th>Position</th>
-                <th>Group Name</th>
-                <th>Time</th>
-                <th>Score</th>
-            </tr>
-        </thead>
-        <tbody id="scoreboardBody">
-        </tbody>
-    </table>
-
     <script src="script_contadorpage.js"></script>
 </body>
 </html>
