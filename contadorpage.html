@@ -10,12 +10,14 @@
     <div class="container">
         <h1>Group Activity Timer</h1>
         <div class="controls">
-            <label for="activityTime">Activity Time:</label>
+            <label for="activityTime">Activity Time (minutes):</label>
             <input type="number" id="activityTime" min="1" placeholder="Enter minutes">
             <button onclick="startActivity()">Start Activity</button>
-            <button onclick="resetActivity()">Reset</button>
+            <button onclick="resetActivity()">Reset Activity</button>
         </div>
-        <div class="groups-container" id="groupsContainer"></div>
+        <div class="groups-container" id="groupsContainer">
+            <!-- Groups will be added dynamically here -->
+        </div>
         <table class="scoreboard" id="scoreboard">
             <thead>
                 <tr>
@@ -25,7 +27,9 @@
                     <th>Score</th>
                 </tr>
             </thead>
-            <tbody id="scoreboardBody"></tbody>
+            <tbody id="scoreboardBody">
+                <!-- Scoreboard data will be added dynamically here -->
+            </tbody>
         </table>
     </div>
     <script src="script_contadorpage.js"></script>
