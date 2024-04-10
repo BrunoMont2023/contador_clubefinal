@@ -58,14 +58,8 @@ function resetarContador() {
     contadorGeralAtivo = false;
     tempoTotalAtividade = 0;
     document.getElementById('contadorAtividade').textContent = '00:00:00';
-
-    // Resetar contadores individuais
     resetarContadoresIndividuais();
-
-    // Limpar grupos e atualizar interface
-    grupos = [];
-    atualizarListaGrupos();
-    atualizarTabelaPontuacoes();
+    resetarTabelaPontuacoes();
 }
 
 function adicionarGrupo() {
@@ -80,6 +74,7 @@ function adicionarGrupo() {
         };
 
         grupos.push(novoGrupo);
+        iniciarContadorIndividual(grupos.length - 1); // Iniciar contador individual para o novo grupo
         atualizarListaGrupos();
         document.getElementById('nomeGrupo').value = '';
     } else {
@@ -87,49 +82,34 @@ function adicionarGrupo() {
     }
 }
 
-function iniciarContadoresIndividuais() {
-    grupos.forEach((grupo, index) => {
+function iniciarContadorIndividual(index) {
+    if (index >= 0 && index < grupos.length) {
+        const grupo = grupos[index];
         grupo.intervalo = setInterval(() => {
             grupo.tempo++;
             document.getElementById(`contadorGrupo${index}`).textContent = formatarTempo(grupo.tempo);
-
-            // Verificar se o grupo concluiu a atividade
-            if (grupo.tempo >= tempoTotalAtividade) {
-                grupo.concluido = true;
-                pausarContadoresIndividuais(index);
-            }
         }, 1000);
-    });
+    }
 }
 
-function pausarContadoresIndividuais(index) {
-    if (index >= 0 && index < grupos.length) {
-        const grupo = grupos[index];
-        if (grupo.intervalo) {
-            clearInterval(grupo.intervalo);
-            grupo.intervalo = null;
-
-            // Calcular pontuação com base no tempo e posição
-            grupo.pontuacao = calcularPontuacao(grupo.tempo);
-            atualizarTabelaPontuacoes();
-        }
-    }
+function pausarContadoresIndividuais() {
+    grupos.forEach((grupo, index) => {
+        clearInterval(grupo.intervalo);
+        grupo.intervalo = null;
+    });
 }
 
 function resetarContadoresIndividuais() {
     grupos.forEach((grupo, index) => {
-        clearInterval(grupo.intervalo);
-        grupo.intervalo = null;
         grupo.tempo = 0;
-        grupo.concluido = false;
         document.getElementById(`contadorGrupo${index}`).textContent = '00:00:00';
+        grupo.concluido = false;
     });
 }
 
 function calcularPontuacao(tempo) {
-    const tempoRestante = tempoTotalAtividade - tempo;
-    const pontuacao = tempoRestante > 0 ? tempoRestante : 0;
-    return pontuacao;
+    // Quanto menor o tempo, maior a pontuação
+    return 10000 / tempo;
 }
 
 function atualizarListaGrupos() {
@@ -141,30 +121,31 @@ function atualizarListaGrupos() {
         divGrupo.innerHTML = `
             <strong>${grupo.nome}</strong>
             <span id="contadorGrupo${index}" class="contador">00:00:00</span>
-            <button onclick="pausarContadoresIndividuais(${index})" ${grupo.concluido ? 'disabled' : ''}>Pausar</button>
+            <button onclick="pausarContadorIndividual(${index})" ${grupo.concluido ? 'disabled' : ''}>Pausar</button>
         `;
         listaGrupos.appendChild(divGrupo);
     });
 }
 
+function resetarTabelaPontuacoes() {
+    const tbody = document.getElementById('corpoTabela');
+    tbody.innerHTML = '';
+}
+
 function atualizarTabelaPontuacoes() {
-    const tabelaGrupos = document.getElementById('tabelaGrupos');
-    const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
+    const tbody = document.getElementById('corpoTabela');
     tbody.innerHTML = '';
 
-    // Ordenar grupos por pontuação (maior para menor)
-    grupos.sort((a, b) => b.pontuacao - a.pontuacao);
+    // Ordenar grupos por tempo (menor tempo primeiro)
+    grupos.sort((a, b) => a.tempo - b.tempo);
 
     grupos.forEach((grupo, index) => {
         const newRow = tbody.insertRow();
         newRow.insertCell(0).textContent = index + 1;
         newRow.insertCell(1).textContent = grupo.nome;
         newRow.insertCell(2).textContent = formatarTempo(grupo.tempo);
-        newRow.insertCell(3).textContent = grupo.pontuacao;
+        newRow.insertCell(3).textContent = calcularPontuacao(grupo.tempo).toFixed(2);
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Atualizar lista de grupos ao carregar a página
-    atualizarListaGrupos();
-});
+document.addEventListener('DOMContentLoaded', atualizarListaGrupos);
