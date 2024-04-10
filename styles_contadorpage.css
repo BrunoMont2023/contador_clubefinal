@@ -1,44 +1,97 @@
 body {
     font-family: Arial, sans-serif;
-    padding: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+.controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-input[type="number"] {
-    width: 50px;
+.controls label {
+    margin-right: 10px;
 }
 
-button {
-    margin-left: 10px;
-}
-
-.contador {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    border: 1px solid #ddd;
+.controls input[type="number"] {
+    width: 80px;
     padding: 8px;
-    text-align: left;
+    font-size: 16px;
+    text-align: center;
 }
 
-th {
+.controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
     background-color: #007bff;
-    color: white;
+    color: #fff;
 }
 
-tr:nth-child(even) {
+.controls button:hover {
+    background-color: #0056b3;
+}
+
+.groups-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.group {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px;
+    width: 200px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.group h3 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.group-info {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.scoreboard {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+}
+
+.scoreboard th, .scoreboard td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.scoreboard th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.scoreboard tr:nth-child(even) {
     background-color: #f2f2f2;
 }
