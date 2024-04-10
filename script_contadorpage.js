@@ -96,6 +96,7 @@ function pausarContadoresIndividuais() {
     grupos.forEach((grupo, index) => {
         clearInterval(grupo.intervalo);
         grupo.intervalo = null;
+        grupo.concluido = true; // Marca o grupo como concluído ao pausar o contador
     });
 }
 
@@ -103,7 +104,7 @@ function resetarContadoresIndividuais() {
     grupos.forEach((grupo, index) => {
         grupo.tempo = 0;
         document.getElementById(`contadorGrupo${index}`).textContent = '00:00:00';
-        grupo.concluido = false;
+        grupo.concluido = false; // Reinicia o status do grupo
     });
 }
 
@@ -148,4 +149,70 @@ function atualizarTabelaPontuacoes() {
     });
 }
 
+function exportarDados() {
+    const dados = grupos.map((grupo, index) => ({
+        Posição: index + 1,
+        'Nome do Grupo': grupo.nome,
+        Tempo: formatarTempo(grupo.tempo),
+        Pontuação: calcularPontuacao(grupo.tempo).toFixed(2)
+    }));
+
+    const cssStyles = `
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-family: Arial, sans-serif;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #007bff;
+                color: white;
+            }
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+        </style>
+    `;
+
+    const tabelaHtml = `
+        ${cssStyles}
+        <table>
+            <thead>
+                <tr>
+                    <th>Posição</th>
+                    <th>Nome do Grupo</th>
+                    <th>Tempo</th>
+                    <th>Pontuação</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${dados.map(grupo =>
+                    `<tr>
+                        <td>${grupo['Posição']}</td>
+                        <td>${grupo['Nome do Grupo']}</td>
+                        <td>${grupo['Tempo']}</td>
+                        <td>${grupo['Pontuação']}</td>
+                    </tr>`
+                ).join('')}
+            </tbody>
+        </table>
+        <button onclick="window.print()">Imprimir Página</button>
+    `;
+
+    const blob = new Blob([tabelaHtml], { type: 'text/html;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.setAttribute('download', 'pontuacoes.html');
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Inicialização da lista de grupos ao carregar a página
 document.addEventListener('DOMContentLoaded', atualizarListaGrupos);
