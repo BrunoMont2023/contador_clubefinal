@@ -3,54 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador de Atividade em Grupos</title>
-    <link rel="stylesheet" href="styles_contadorpage.css">
+    <title>Competition Scoreboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .group-input {
+            margin-bottom: 10px;
+        }
+        .group-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .group-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            width: 150px;
+        }
+        .group-box h3 {
+            margin-top: 0;
+        }
+        .scoreboard {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .scoreboard th, .scoreboard td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .scoreboard th {
+            background-color: #007bff;
+            color: white;
+        }
+        .scoreboard tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <!-- Imagem no topo da página -->
-    <img src="logo.png" alt="Logo da Empresa" style="width: 200px; margin-top: 20px;">
-
-    <h1>Contador de Atividade em Grupos</h1>
-
+    <h1>Competition Scoreboard</h1>
     <div class="container">
-        <div>
-            <label for="horas">Horas:</label>
-            <input type="number" id="horas" min="0" value="0">
-            <label for="minutos">Minutos:</label>
-            <input type="number" id="minutos" min="0" max="59" value="0">
-            <button onclick="personalizarTempo()">Definir Tempo</button>
-            <p>Tempo Total: <span id="contadorAtividade">00:00:00</span></p>
-            <button onclick="iniciarOuPausarContador()">Iniciar/Pausar Atividade</button>
-            <button onclick="resetarContador()">Resetar Atividade</button>
+        <div class="group-input">
+            <input type="text" id="groupName" placeholder="Enter group name">
+            <button onclick="addGroup()">Add Group</button>
         </div>
-
-        <div>
-            <label for="nomeGrupo">Nome do Grupo:</label>
-            <input type="text" id="nomeGrupo">
-            <button onclick="adicionarGrupo()">Adicionar Grupo</button>
-        </div>
+        <div class="group-container" id="groupContainer"></div>
+        <button onclick="startActivity()">Start Activity</button>
+        <button onclick="pauseActivity()">Pause Activity</button>
     </div>
-
-    <div id="listaGrupos"></div>
-
-    <table id="tabelaGrupos">
+    <table class="scoreboard" id="scoreboard">
         <thead>
             <tr>
-                <th>Posição</th>
-                <th>Nome do Grupo</th>
-                <th>Tempo</th>
-                <th>Pontuação</th>
+                <th>Position</th>
+                <th>Group Name</th>
+                <th>Time</th>
+                <th>Score</th>
             </tr>
         </thead>
-        <tbody id="corpoTabela">
-            <!-- Conteúdo da tabela será preenchido dinamicamente -->
+        <tbody id="scoreboardBody">
         </tbody>
     </table>
 
-    <!-- Botão de Exportar Dados -->
-    <button onclick="exportarDados()">Exportar Dados</button>
-
-    <!-- Script JavaScript -->
     <script src="script_contadorpage.js"></script>
 </body>
 </html>
