@@ -50,6 +50,7 @@ function iniciarContadorGeral() {
 function pausarContadorGeral() {
     clearInterval(contadorGeralInterval);
     contadorGeralAtivo = false;
+    pausarContadoresIndividuais();
 }
 
 function resetarContador() {
@@ -68,7 +69,6 @@ function adicionarGrupo() {
             nome: nomeGrupo,
             tempo: 0,
             intervalo: null,
-            pontuacao: 0,
             pausado: false
         };
 
@@ -94,23 +94,13 @@ function iniciarContadoresIndividuais() {
 function pausarContadoresIndividuais(index) {
     if (index >= 0 && index < grupos.length) {
         const grupo = grupos[index];
-        if (grupo.intervalo) {
-            clearInterval(grupo.intervalo);
-            grupo.pausado = true;
-        } else {
-            grupo.intervalo = setInterval(() => {
-                grupo.tempo++;
-                document.getElementById(`contadorGrupo${index}`).textContent = formatarTempo(grupo.tempo);
-            }, 1000);
-            grupo.pausado = false;
-        }
+        grupo.pausado = !grupo.pausado;
     }
 }
 
 function resetarContadoresIndividuais() {
     grupos.forEach((grupo, index) => {
         grupo.tempo = 0;
-        grupo.pontuacao = 0;
         grupo.pausado = false;
         document.getElementById(`contadorGrupo${index}`).textContent = '00:00:00';
     });
@@ -130,7 +120,7 @@ function atualizarListaGrupos() {
         divGrupo.innerHTML = `
             <strong>${grupo.nome}</strong>
             <span id="contadorGrupo${index}" class="contador">00:00:00</span>
-            <button onclick="pausarContadoresIndividuais(${index})">Pausar</button>
+            <button onclick="pausarContadoresIndividuais(${index})">Pausar/Retomar</button>
         `;
         listaGrupos.appendChild(divGrupo);
     });
