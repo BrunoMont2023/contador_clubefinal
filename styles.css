@@ -1,27 +1,25 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
-    padding: 0;
+    padding: 20px;
 }
 
 .container {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-.container > div {
-    width: 45%;
-}
-
-.contador {
-    display: block;
-    font-size: 24px;
-    margin-top: 10px;
+input[type="number"] {
+    width: 50px;
 }
 
 button {
-    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.contador {
+    font-size: 18px;
+    font-weight: bold;
 }
 
 table {
