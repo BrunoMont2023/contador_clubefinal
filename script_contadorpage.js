@@ -59,7 +59,15 @@ function resetarContador() {
     tempoTotalAtividade = 0;
     document.getElementById('contadorAtividade').textContent = '00:00:00';
     resetarContadoresIndividuais();
+    limparTabelaPontuacoes(); // Limpar a tabela de pontuações
 }
+
+function limparTabelaPontuacoes() {
+    const tabelaGrupos = document.getElementById('tabelaGrupos');
+    const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
+    tbody.innerHTML = ''; // Limpar o conteúdo da tabela
+}
+
 
 function adicionarGrupo() {
     const nomeGrupo = document.getElementById('nomeGrupo').value.trim();
@@ -106,9 +114,12 @@ function resetarContadoresIndividuais() {
     });
 }
 
+// Função atualizada para calcular a pontuação com base no tempo
 function calcularPontuacao(tempo) {
-    // Quanto menor o tempo, maior a pontuação
-    return tempoTotalAtividade - tempo;
+    // Aqui você pode ajustar a lógica de pontuação conforme necessário
+    // Por exemplo, se quiser que o grupo com menos tempo tenha mais pontos,
+    // você pode inverter a lógica de cálculo de pontuação.
+    return tempo > 0 ? 1000 / tempo : 0;
 }
 
 function atualizarListaGrupos() {
