@@ -16,19 +16,14 @@ function startActivity() {
 
     resetActivity();
 
-    // Create group
-    const newGroup = {
-        name: activityName,
-        timeTaken: 0,
-        intervalId: setInterval(() => {
-            newGroup.timeTaken++;
-            renderGroups();
-        }, 1000)
-    };
-
-    groups.push(newGroup);
-    renderGroups();
     startCountdown(activityTime * 60);
+
+    // Clear existing groups and render
+    groups = [];
+    renderGroups();
+
+    // Add initial group
+    addGroup();
 }
 
 function startCountdown(totalSeconds) {
@@ -47,15 +42,27 @@ function startCountdown(totalSeconds) {
 function renderGroups() {
     const groupsContainer = document.getElementById('groupsContainer');
     groupsContainer.innerHTML = '';
-    groups.forEach(group => {
+    groups.forEach((group, index) => {
         const groupElement = document.createElement('div');
         groupElement.classList.add('group');
         groupElement.innerHTML = `
-            <h3>${group.name}</h3>
+            <h3>Group ${index + 1}</h3>
             <p>Time taken: ${formatTime(group.timeTaken)}</p>
         `;
         groupsContainer.appendChild(groupElement);
     });
+}
+
+function addGroup() {
+    const groupName = prompt('Enter group name:');
+    if (groupName) {
+        const newGroup = {
+            name: groupName,
+            timeTaken: 0
+        };
+        groups.push(newGroup);
+        renderGroups();
+    }
 }
 
 function endActivity() {
@@ -85,12 +92,7 @@ function calculateScore(position) {
 }
 
 function resetActivity() {
-    groups.forEach(group => {
-        clearInterval(group.intervalId);
-    });
-    groups = [];
     document.getElementById('countdown').textContent = '';
-    renderGroups();
 }
 
 function exportData() {
@@ -104,7 +106,7 @@ function exportData() {
         }))
     };
 
-    // Simulate exporting data (e.g., to Excel format)
+    // Simulate exporting data (e.g., to console)
     console.log(data);
 }
 
