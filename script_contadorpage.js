@@ -2,66 +2,50 @@ let groups = [];
 let timerInterval = null;
 let activityTime = 0;
 
-function addGroup() {
-    const groupName = prompt('Enter group name:');
-    if (groupName) {
-        groups.push({
-            name: groupName,
-            timeTaken: 0,
-            intervalId: null
-        });
-        renderGroups();
-    }
-}
-
-function renderGroups() {
-    const groupsContainer = document.getElementById('groupsContainer');
-    groupsContainer.innerHTML = '';
-    groups.forEach((group, index) => {
-        const groupElement = document.createElement('div');
-        groupElement.classList.add('group');
-        groupElement.innerHTML = `
-            <h3>${group.name}</h3>
-            <div class="group-info">
-                Time Taken: <span id="groupTime${index}">00:00</span>
-                <button onclick="pauseGroup(${index})">Pause</button>
-            </div>
-        `;
-        groupsContainer.appendChild(groupElement);
-    });
+function setActivityTime(minutes) {
+    document.getElementById('activityTime').value = minutes;
 }
 
 function startActivity() {
+    const activityName = document.getElementById('activityName').value;
     activityTime = parseInt(document.getElementById('activityTime').value);
     if (!activityTime || activityTime <= 0) {
         alert('Please enter a valid activity time (minutes).');
         return;
     }
-    groups.forEach((group, index) => {
-        group.intervalId = setInterval(() => {
-            group.timeTaken++;
-            const timeElement = document.getElementById(`groupTime${index}`);
-            timeElement.textContent = formatTime(group.timeTaken);
-        }, 1000);
-    });
-    timerInterval = setTimeout(endActivity, activityTime * 60000);
-}
-
-function resetActivity() {
-    clearTimeout(timerInterval);
-    groups.forEach(group => {
-        clearInterval(group.intervalId);
-        group.timeTaken = 0;
-    });
+    document.getElementById('activityTitle').textContent = activityName || 'Activity Timer';
+    startCountdown(activityTime * 60); // Convert minutes to seconds
     renderGroups();
-    clearScoreboard();
 }
 
-function pauseGroup(index) {
-    const group = groups[index];
-    if (group.intervalId) {
-        clearInterval(group.intervalId);
-        group.intervalId = null;
+function startCountdown(totalSeconds) {
+    let secondsRemaining = totalSeconds;
+    timerInterval = setInterval(() => {
+        secondsRemaining--;
+        const countdownElement = document.getElementById('countdown');
+        countdownElement.textContent = `Time Remaining: ${formatTime(secondsRemaining)}`;
+        if (secondsRemaining <= 0) {
+            clearInterval(timerInterval);
+            endActivity();
+        }
+    }, 1000);
+}
+
+function renderGroups() {
+    const groupsContainer = document.getElementById('groupsContainer');
+    groupsContainer.innerHTML = '';
+    const groupName = prompt('Enter group name:');
+    if (groupName) {
+        groups.push({
+            name: groupName,
+            timeTaken: 0,
+            intervalId: setInterval(() => {
+                groups.forEach((group, index) => {
+                    group.timeTaken++;
+                    renderGroups();
+                });
+            }, 1000)
+        });
     }
 }
 
@@ -82,15 +66,10 @@ function updateScoreboard() {
             <td>${index + 1}</td>
             <td>${group.name}</td>
             <td>${formatTime(group.timeTaken)}</td>
-            <td>${calculateScore(group.timeTaken)}</td>
+            <td>${calculateScore(index)}</td>
         `;
         scoreboardBody.appendChild(row);
     });
-}
-
-function clearScoreboard() {
-    const scoreboardBody = document.getElementById('scoreboardBody');
-    scoreboardBody.innerHTML = '';
 }
 
 function formatTime(seconds) {
@@ -99,9 +78,35 @@ function formatTime(seconds) {
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
-function calculateScore(timeTaken) {
-    // Customize scoring logic here (e.g., based on time taken)
-    return Math.floor(100000 / timeTaken);
+function calculateScore(position) {
+    const maxScore = 1000;
+    const decrement = 100;
+    return maxScore - (position * decrement);
 }
 
-document.addEventListener('DOMContentLoaded', renderGroups);
+function resetActivity() {
+    clearInterval(timerInterval);
+    groups = [];
+    activityTime = 0;
+    document.getElementById('activityName').value = '';
+    document.getElementById('activityTime').value = '';
+    document.getElementById('activityTitle').textContent = 'Activity Timer';
+    document.getElementById('countdown').textContent = '';
+    document.getElementById('groupsContainer').innerHTML = '';
+    document.getElementById('scoreboardBody').innerHTML = '';
+}
+
+function exportData() {
+    const data = {
+        activityName: document.getElementById('activityName').value,
+        groups: groups.map(group => ({
+            name: group.name,
+            timeTaken: formatTime(group.timeTaken),
+            position: groups.indexOf(group) + 1,
+            score: calculateScore(groups.indexOf(group))
+        }))
+    };
+
+    // Simulate exporting data (e.g., to Excel format)
+    console.log(data);
+}
