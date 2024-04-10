@@ -22,7 +22,10 @@ function renderGroups() {
         groupElement.classList.add('group');
         groupElement.innerHTML = `
             <h3>${group.name}</h3>
-            <div class="group-info">Time Taken: <span id="groupTime${index}">00:00</span></div>
+            <div class="group-info">
+                Time Taken: <span id="groupTime${index}">00:00</span>
+                <button onclick="pauseGroup(${index})">Pause</button>
+            </div>
         `;
         groupsContainer.appendChild(groupElement);
     });
@@ -52,6 +55,14 @@ function resetActivity() {
     });
     renderGroups();
     clearScoreboard();
+}
+
+function pauseGroup(index) {
+    const group = groups[index];
+    if (group.intervalId) {
+        clearInterval(group.intervalId);
+        group.intervalId = null;
+    }
 }
 
 function endActivity() {
