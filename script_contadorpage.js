@@ -1,117 +1,98 @@
+let activityName = '';
+let activitySeconds = 0;
+let countdownInterval = null;
 let groups = [];
 
-function startActivity() {
-    const activityName = document.getElementById('activityName').value.trim();
-    const activityTime = parseInt(document.getElementById('activityTime').value, 10);
-    
-    if (!activityName) {
-        alert('Please enter a valid activity name.');
-        return;
-    }
-
-    if (isNaN(activityTime) || activityTime <= 0) {
-        alert('Please enter a valid activity time (minutes).');
-        return;
-    }
-
-    resetActivity();
-
-    startCountdown(activityTime * 60);
-
-    // Clear existing groups and render
-    groups = [];
-    renderGroups();
-
-    // Add initial group
-    addGroup();
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
-function startCountdown(totalSeconds) {
-    let secondsRemaining = totalSeconds;
-    const countdownElement = document.getElementById('countdown');
-    const timerInterval = setInterval(() => {
-        secondsRemaining--;
-        countdownElement.textContent = `Time Remaining: ${formatTime(secondsRemaining)}`;
-        if (secondsRemaining <= 0) {
-            clearInterval(timerInterval);
-            endActivity();
+function startActivity() {
+    const hours = parseInt(document.getElementById('activityHours').value, 10) || 0;
+    const minutes = parseInt(document.getElementById('activityMinutes').value, 10) || 0;
+    activitySeconds = hours * 3600 + minutes * 60;
+
+    activityName = document.getElementById('activityName').value.trim();
+    if (activityName && activitySeconds > 0) {
+        startCountdown();
+    } else {
+        alert('Por favor, preencha o nome da atividade e o tempo válido.');
+    }
+}
+
+function startCountdown() {
+    clearInterval(countdownInterval);
+    countdownInterval = setInterval(() => {
+        activitySeconds--;
+        if (activitySeconds < 0) {
+            clearInterval(countdownInterval);
+            alert('Tempo da atividade esgotado!');
+            activitySeconds = 0;
         }
+        renderGroups();
     }, 1000);
 }
 
-function renderGroups() {
-    const groupsContainer = document.getElementById('groupsContainer');
-    groupsContainer.innerHTML = '';
-    groups.forEach((group, index) => {
-        const groupElement = document.createElement('div');
-        groupElement.classList.add('group');
-        groupElement.innerHTML = `
-            <h3>Group ${index + 1}</h3>
-            <p>Time taken: ${formatTime(group.timeTaken)}</p>
-        `;
-        groupsContainer.appendChild(groupElement);
-    });
-}
-
 function addGroup() {
-    const groupName = prompt('Enter group name:');
+    const groupName = document.getElementById('groupName').value.trim();
     if (groupName) {
-        const newGroup = {
-            name: groupName,
-            timeTaken: 0
-        };
-        groups.push(newGroup);
+        groups.push({ name: groupName, completionTime: activitySeconds });
         renderGroups();
+        document.getElementById('groupName').value = '';
+    } else {
+        alert('Por favor, insira um nome válido para o grupo.');
     }
 }
 
-function endActivity() {
-    updateScoreboard();
+function renderGroups() {
+    const groupsContainer = document.getElementById('groups');
+    groupsContainer.innerHTML = '';
+    groups.forEach((group, index) => {
+        const groupElement = document.createElement('div');
+        groupElement.textContent = `${group.name}: ${formatTime(group.completionTime)}`;
+        groupsContainer.appendChild(groupElement);
+    });
+    updateScoreTable();
 }
 
-function updateScoreboard() {
-    const scoreboardBody = document.getElementById('scoreboardBody');
-    scoreboardBody.innerHTML = '';
-    const sortedGroups = [...groups].sort((a, b) => a.timeTaken - b.timeTaken);
+function updateScoreTable() {
+    const scoreBody = document.getElementById('scoreBody');
+    scoreBody.innerHTML = '';
+    const sortedGroups = [...groups];
+    sortedGroups.sort((a, b) => a.completionTime - b.completionTime);
+
     sortedGroups.forEach((group, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${index + 1}</td>
+        const position = index + 1;
+        const points = 1000 - (position - 1) * 100;
+        const row = `<tr>
+            <td>${position}</td>
             <td>${group.name}</td>
-            <td>${formatTime(group.timeTaken)}</td>
-            <td>${calculateScore(index)}</td>
-        `;
-        scoreboardBody.appendChild(row);
+            <td>${formatTime(group.completionTime)}</td>
+            <td>${points}</td>
+        </tr>`;
+        scoreBody.innerHTML += row;
     });
 }
 
-function calculateScore(position) {
-    const maxScore = 1000;
-    const decrement = 100;
-    return maxScore - (position * decrement);
-}
+function exportToExcel() {
+    const data = [['Posição', 'Nome do Grupo', 'Tempo de Conclusão', 'Pontuação']];
+    groups.forEach((group, index) => {
+        const position = index + 1;
+        const points = 1000 - (position - 1) * 100;
+        data.push([position, group.name, formatTime(group.completionTime), points]);
+    });
 
-function resetActivity() {
-    document.getElementById('countdown').textContent = '';
-}
+    const csvContent = data.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
 
-function exportData() {
-    const data = {
-        activityName: document.getElementById('activityName').value,
-        groups: groups.map(group => ({
-            name: group.name,
-            timeTaken: formatTime(group.timeTaken),
-            position: groups.indexOf(group) + 1,
-            score: calculateScore(groups.indexOf(group))
-        }))
-    };
-
-    // Simulate exporting data (e.g., to console)
-    console.log(data);
-}
-
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${activityName}_pontuacoes.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
