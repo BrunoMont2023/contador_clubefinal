@@ -3,45 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group Activity Timer</title>
+    <title>Competition Timer</title>
     <link rel="stylesheet" href="styles_contadorpage.css">
 </head>
 <body>
-    <div class="container">
-        <h1 id="activityTitle">Activity Timer</h1>
-        <img src="https://raw.githubusercontent.com/BrunoMont2023/contador_clubefinal/main/images/Logoclube.png" alt="Activity Header Image" class="header-image">
-        <div class="activity-controls">
+    <header>
+        <h1>Competition Timer</h1>
+        <img src="competition-header.jpg" alt="Competition Header Image">
+    </header>
+    <main>
+        <div class="controls">
             <label for="activityName">Activity Name:</label>
             <input type="text" id="activityName" placeholder="Enter activity name">
-            <br>
             <label for="activityTime">Activity Time (minutes):</label>
-            <input type="number" id="activityTime" min="1" placeholder="Enter minutes">
-            <button onclick="setActivityTime(5)">5 Min</button>
-            <button onclick="setActivityTime(10)">10 Min</button>
-            <button onclick="setActivityTime(15)">15 Min</button>
-            <button onclick="setActivityTime(20)">20 Min</button>
+            <input type="number" id="activityTime" min="1" placeholder="Enter time in minutes">
             <button onclick="startActivity()">Start Activity</button>
-            <button onclick="resetActivity()">Reset Activity</button>
+            <button onclick="resetActivity()">Reset</button>
         </div>
-        <div class="groups-container" id="groupsContainer">
-            <!-- Groups will be added dynamically here -->
+        <div class="groups" id="groupsContainer">
+            <!-- Groups will be dynamically added here -->
         </div>
-        <div class="countdown" id="countdown"></div>
-        <table class="scoreboard" id="scoreboard">
-            <thead>
-                <tr>
-                    <th>Position</th>
-                    <th>Group Name</th>
-                    <th>Time Taken</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody id="scoreboardBody">
-                <!-- Scoreboard data will be added dynamically here -->
-            </tbody>
-        </table>
+        <div class="scoreboard">
+            <h2>Scoreboard</h2>
+            <table id="scoreTable">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Group Name</th>
+                        <th>Time Taken</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreboardBody">
+                    <!-- Scoreboard data will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
         <button onclick="exportData()">Export Data</button>
-    </div>
+    </main>
     <script src="script_contadorpage.js"></script>
 </body>
 </html>
