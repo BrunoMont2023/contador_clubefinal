@@ -1,86 +1,57 @@
 let groups = [];
 let scoreboard = [];
-let timerInterval = null;
-let totalTime = 0;
 
 function addGroup() {
-    const groupName = document.getElementById('groupName').value.trim();
+    const groupName = prompt('Enter group name:');
     if (groupName) {
         groups.push({
             name: groupName,
-            time: 0,
-            interval: null,
-            active: false
+            timeTaken: 0,
+            intervalId: null
         });
         renderGroups();
-        document.getElementById('groupName').value = '';
     }
 }
 
 function renderGroups() {
-    const groupContainer = document.getElementById('groupContainer');
-    groupContainer.innerHTML = '';
+    const groupsContainer = document.getElementById('groupsContainer');
+    groupsContainer.innerHTML = '';
     groups.forEach((group, index) => {
-        const groupBox = document.createElement('div');
-        groupBox.classList.add('group-box');
-        groupBox.innerHTML = `
+        const groupElement = document.createElement('div');
+        groupElement.classList.add('group');
+        groupElement.innerHTML = `
             <h3>${group.name}</h3>
-            <span id="groupTime${index}">${formatTime(group.time)}</span>
-            <button onclick="pauseGroup(${index})">Pause</button>
+            <div class="group-info">Time Taken: <span id="groupTime${index}">00:00</span></div>
         `;
-        groupContainer.appendChild(groupBox);
+        groupsContainer.appendChild(groupElement);
     });
 }
 
 function startActivity() {
-    if (groups.length === 0) {
-        alert("Please add at least one group.");
-        return;
-    }
-    totalTime = 60; // Set total time in seconds (change as needed)
-    startTimer();
-    groups.forEach(group => {
-        group.active = true;
-        startGroupTimer(group);
-    });
-}
-
-function startTimer() {
-    timerInterval = setInterval(() => {
-        totalTime--;
-        renderGroups();
-        if (totalTime <= 0) {
-            endActivity();
-        }
-    }, 1000);
-}
-
-function startGroupTimer(group) {
-    group.interval = setInterval(() => {
-        if (group.active) {
-            group.time++;
-            document.getElementById(`groupTime${groups.indexOf(group)}`).textContent = formatTime(group.time);
-        }
-    }, 1000);
-}
-
-function pauseGroup(index) {
-    const group = groups[index];
-    if (group.interval) {
-        clearInterval(group.interval);
-        group.interval = null;
-        group.active = false;
-        updateScoreboard();
+    const activityTime = parseInt(document.getElementById('activityTime').value);
+    if (activityTime && activityTime > 0) {
+        groups.forEach((group, index) => {
+            group.intervalId = setInterval(() => {
+                group.timeTaken++;
+                const timeElement = document.getElementById(`groupTime${index}`);
+                timeElement.textContent = formatTime(group.timeTaken);
+            }, 1000);
+        });
+        setTimeout(endActivity, activityTime * 60000); // End activity after specified minutes
+    } else {
+        alert('Please enter a valid activity time (minutes).');
     }
 }
 
 function endActivity() {
-    clearInterval(timerInterval);
+    groups.forEach(group => {
+        clearInterval(group.intervalId);
+    });
     updateScoreboard();
 }
 
 function updateScoreboard() {
-    scoreboard = groups.slice().sort((a, b) => a.time - b.time);
+    scoreboard = groups.slice().sort((a, b) => a.timeTaken - b.timeTaken);
     const scoreboardBody = document.getElementById('scoreboardBody');
     scoreboardBody.innerHTML = '';
     scoreboard.forEach((group, index) => {
@@ -88,21 +59,22 @@ function updateScoreboard() {
         row.innerHTML = `
             <td>${index + 1}</td>
             <td>${group.name}</td>
-            <td>${formatTime(group.time)}</td>
-            <td>${calculateScore(group.time)}</td>
+            <td>${formatTime(group.timeTaken)}</td>
+            <td>${calculateScore(group.timeTaken)}</td>
         `;
         scoreboardBody.appendChild(row);
     });
 }
 
-function calculateScore(time) {
-    // Example scoring logic (adjust as needed)
-    return Math.floor(100000 / time);
+function calculateScore(timeTaken) {
+    // Customize scoring logic as needed
+    return Math.floor(100000 / timeTaken);
 }
 
 function formatTime(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
+    const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
+
+document.addEventListener('DOMContentLoaded', renderGroups);
