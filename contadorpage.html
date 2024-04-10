@@ -8,16 +8,25 @@
 </head>
 <body>
     <div class="container">
-        <h1>Group Activity Timer</h1>
-        <div class="controls">
+        <h1 id="activityTitle">Activity Timer</h1>
+        <img src="https://raw.githubusercontent.com/BrunoMont2023/contador_clubefinal/main/images/Logoclube.png" alt="Activity Header Image" class="header-image">
+        <div class="activity-controls">
+            <label for="activityName">Activity Name:</label>
+            <input type="text" id="activityName" placeholder="Enter activity name">
+            <br>
             <label for="activityTime">Activity Time (minutes):</label>
             <input type="number" id="activityTime" min="1" placeholder="Enter minutes">
+            <button onclick="setActivityTime(5)">5 Min</button>
+            <button onclick="setActivityTime(10)">10 Min</button>
+            <button onclick="setActivityTime(15)">15 Min</button>
+            <button onclick="setActivityTime(20)">20 Min</button>
             <button onclick="startActivity()">Start Activity</button>
             <button onclick="resetActivity()">Reset Activity</button>
         </div>
         <div class="groups-container" id="groupsContainer">
             <!-- Groups will be added dynamically here -->
         </div>
+        <div class="countdown" id="countdown"></div>
         <table class="scoreboard" id="scoreboard">
             <thead>
                 <tr>
@@ -31,6 +40,7 @@
                 <!-- Scoreboard data will be added dynamically here -->
             </tbody>
         </table>
+        <button onclick="exportData()">Export Data</button>
     </div>
     <script src="script_contadorpage.js"></script>
 </body>
