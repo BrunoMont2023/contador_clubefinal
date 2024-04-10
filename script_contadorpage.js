@@ -126,41 +126,58 @@ function atualizarListaGrupos() {
     });
 }
 
-    function atualizarTabelaPontuacoes() {
-        const tabelaGrupos = document.getElementById('tabelaGrupos');
-        const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
-        tbody.innerHTML = '';
-    
-        // Ordenar grupos por tempo (menor tempo primeiro)
-        grupos.sort((a, b) => a.tempo - b.tempo);
-    
-        // Atribuir pontuações com base no tempo e posição
-        const pontuacoes = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100];
-    
-        grupos.forEach((grupo, index) => {
-            const newRow = tbody.insertRow();
-            const posicao = index + 1;
-            const pontuacao = calcularPontuacao(grupo.tempo);
-    
-            newRow.insertCell(0).textContent = posicao;
-            newRow.insertCell(1).textContent = grupo.nome;
-            newRow.insertCell(2).textContent = formatarTempo(grupo.tempo);
-            newRow.insertCell(3).textContent = pontuacao;
-    
-            // Atualizar pontuação do grupo
-            grupo.pontuacao = pontuacao;
-        });
-    
-        // Reordenar grupos por pontuação (maior pontuação primeiro)
-        grupos.sort((a, b) => b.pontuacao - a.pontuacao);
-    
-        // Atualizar classificação com base na nova ordem de pontuações
-        grupos.forEach((grupo, index) => {
-            const row = tbody.rows[index];
-            row.cells[0].textContent = index + 1; // Atualizar posição
-        });
+function atualizarTabelaPontuacoes() {
+    const tabelaGrupos = document.getElementById('tabelaGrupos');
+    const tbody = tabelaGrupos.getElementsByTagName('tbody')[0];
+
+    // Limpar o conteúdo atual da tabela
+    tbody.innerHTML = '';
+
+    // Ordenar grupos por tempo (menor tempo primeiro)
+    grupos.sort((a, b) => a.tempo - b.tempo);
+
+    // Atribuir pontuações com base no tempo e posição
+    const pontuacoes = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100];
+
+    // Atualizar cada linha da tabela com os grupos e suas pontuações
+    grupos.forEach((grupo, index) => {
+        const newRow = tbody.insertRow();
+        const posicao = index + 1;
+        const pontuacao = calcularPontuacao(grupo.tempo);
+
+        newRow.insertCell(0).textContent = posicao;
+        newRow.insertCell(1).textContent = grupo.nome;
+        newRow.insertCell(2).textContent = formatarTempo(grupo.tempo);
+        newRow.insertCell(3).textContent = pontuacao;
+
+        // Atualizar pontuação do grupo
+        grupo.pontuacao = pontuacao;
+    });
+
+    // Reordenar grupos por pontuação (maior pontuação primeiro)
+    grupos.sort((a, b) => b.pontuacao - a.pontuacao);
+
+    // Atualizar classificação com base na nova ordem de pontuações
+    grupos.forEach((grupo, index) => {
+        const row = tbody.rows[index];
+        row.cells[0].textContent = index + 1; // Atualizar posição
+    });
+}
+
+function grupoTerminouAtividade(index) {
+    if (index >= 0 && index < grupos.length) {
+        const grupo = grupos[index];
+        clearInterval(grupo.intervalo); // Parar contador individual do grupo
+        grupo.intervalo = null;
+
+        // Calcular pontuação com base no tempo e posição
+        grupo.pontuacao = calcularPontuacao(grupo.tempo);
+        
+        // Atualizar automaticamente a tabela de pontuações
+        atualizarTabelaPontuacoes();
     }
-    
+}
+
 
 function exportarDados() {
     // Atualizar tabela de pontuações antes de exportar
