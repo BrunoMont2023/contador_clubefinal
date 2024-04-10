@@ -1,218 +1,114 @@
-let tempoTotalAtividade = 0;
-let contadorGeralInterval = null;
-let contadorGeralAtivo = false;
-let grupos = [];
+let groups = [];
+let timerInterval = null;
+let totalTime = 0;
+let scoreboard = [];
 
-function formatarTempo(segundos) {
-    const horas = Math.floor(segundos / 3600);
-    const minutos = Math.floor((segundos % 3600) / 60);
-    const segundosFormatados = segundos % 60;
-    return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundosFormatados).padStart(2, '0')}`;
-}
-
-function personalizarTempo() {
-    const horas = parseInt(document.getElementById('horas').value) || 0;
-    const minutos = parseInt(document.getElementById('minutos').value) || 0;
-    tempoTotalAtividade = horas * 3600 + minutos * 60;
-
-    if (tempoTotalAtividade > 0) {
-        document.getElementById('contadorAtividade').textContent = formatarTempo(tempoTotalAtividade);
-    } else {
-        alert("Por favor, insira um tempo válido para a atividade.");
+function addGroup() {
+    const groupName = document.getElementById('groupName').value.trim();
+    if (groupName) {
+        groups.push({
+            name: groupName,
+            time: 0,
+            interval: null,
+            active: false
+        });
+        renderGroups();
+        document.getElementById('groupName').value = '';
     }
 }
 
-function iniciarOuPausarContador() {
-    if (!contadorGeralAtivo && tempoTotalAtividade > 0) {
-        iniciarContadorGeral();
-    } else {
-        pausarContadorGeral();
-    }
+function renderGroups() {
+    const groupContainer = document.getElementById('groupContainer');
+    groupContainer.innerHTML = '';
+    groups.forEach((group, index) => {
+        const groupBox = document.createElement('div');
+        groupBox.classList.add('group-box');
+        groupBox.innerHTML = `
+            <h3>${group.name}</h3>
+            <span id="groupTime${index}">${formatTime(group.time)}</span>
+            <button onclick="pauseGroup(${index})">Pause</button>
+        `;
+        groupContainer.appendChild(groupBox);
+    });
 }
 
-function iniciarContadorGeral() {
-    contadorGeralAtivo = true;
-    contadorGeralInterval = setInterval(() => {
-        tempoTotalAtividade--;
-        document.getElementById('contadorAtividade').textContent = formatarTempo(tempoTotalAtividade);
+function startActivity() {
+    if (groups.length === 0) {
+        alert("Please add at least one group.");
+        return;
+    }
+    totalTime = 60; // Set total time in seconds (change as needed)
+    startTimer();
+    groups.forEach(group => {
+        group.active = true;
+        startGroupTimer(group);
+    });
+}
 
-        if (tempoTotalAtividade <= 0) {
-            clearInterval(contadorGeralInterval);
-            contadorGeralAtivo = false;
-            alert("Tempo da atividade esgotado!");
-            resetarContador();
+function startTimer() {
+    timerInterval = setInterval(() => {
+        totalTime--;
+        renderGroups();
+        if (totalTime <= 0) {
+            endActivity();
         }
     }, 1000);
-
-    iniciarContadoresIndividuais();
 }
 
-function pausarContadorGeral() {
-    clearInterval(contadorGeralInterval);
-    contadorGeralAtivo = false;
-    pausarContadoresIndividuais();
+function startGroupTimer(group) {
+    group.interval = setInterval(() => {
+        if (group.active) {
+            group.time++;
+        }
+    }, 1000);
 }
 
-function resetarContador() {
-    clearInterval(contadorGeralInterval);
-    contadorGeralAtivo = false;
-    tempoTotalAtividade = 0;
-    document.getElementById('contadorAtividade').textContent = '00:00:00';
-    resetarContadoresIndividuais();
-    resetarTabelaPontuacoes();
+function pauseActivity() {
+    clearInterval(timerInterval);
+    groups.forEach(group => {
+        group.active = false;
+        clearInterval(group.interval);
+    });
+    updateScoreboard();
 }
 
-function adicionarGrupo() {
-    const nomeGrupo = document.getElementById('nomeGrupo').value.trim();
-
-    if (nomeGrupo) {
-        const novoGrupo = {
-            nome: nomeGrupo,
-            tempo: 0,
-            intervalo: null,
-            concluido: false
-        };
-
-        grupos.push(novoGrupo);
-        iniciarContadorIndividual(grupos.length - 1); // Iniciar contador individual para o novo grupo
-        atualizarListaGrupos();
-        document.getElementById('nomeGrupo').value = '';
-    } else {
-        alert("Por favor, insira um nome válido para o grupo.");
-    }
+function endActivity() {
+    clearInterval(timerInterval);
+    groups.forEach(group => {
+        group.active = false;
+        clearInterval(group.interval);
+    });
+    updateScoreboard();
 }
 
-function iniciarContadorIndividual(index) {
-    if (index >= 0 && index < grupos.length) {
-        const grupo = grupos[index];
-        grupo.intervalo = setInterval(() => {
-            grupo.tempo++;
-            document.getElementById(`contadorGrupo${index}`).textContent = formatarTempo(grupo.tempo);
-        }, 1000);
-    }
-}
-
-function pausarContadoresIndividuais() {
-    grupos.forEach((grupo, index) => {
-        clearInterval(grupo.intervalo);
-        grupo.intervalo = null;
-        grupo.concluido = true; // Marca o grupo como concluído ao pausar o contador
+function updateScoreboard() {
+    scoreboard = groups.slice().sort((a, b) => a.time - b.time);
+    const scoreboardBody = document.getElementById('scoreboardBody');
+    scoreboardBody.innerHTML = '';
+    scoreboard.forEach((group, index) => {
+        const row = scoreboardBody.insertRow();
+        row.insertCell(0).textContent = index + 1;
+        row.insertCell(1).textContent = group.name;
+        row.insertCell(2).textContent = formatTime(group.time);
+        row.insertCell(3).textContent = calculateScore(group.time);
     });
 }
 
-function resetarContadoresIndividuais() {
-    grupos.forEach((grupo, index) => {
-        grupo.tempo = 0;
-        document.getElementById(`contadorGrupo${index}`).textContent = '00:00:00';
-        grupo.concluido = false; // Reinicia o status do grupo
-    });
+function calculateScore(time) {
+    // Example scoring logic (customize as needed)
+    return 1000 - time; // Higher score for faster completion
 }
 
-function calcularPontuacao(tempo) {
-    // Quanto menor o tempo, maior a pontuação
-    return 10000 / tempo;
+function pauseGroup(index) {
+    const group = groups[index];
+    group.active = false;
 }
 
-function atualizarListaGrupos() {
-    const listaGrupos = document.getElementById('listaGrupos');
-    listaGrupos.innerHTML = '';
-
-    grupos.forEach((grupo, index) => {
-        const divGrupo = document.createElement('div');
-        divGrupo.innerHTML = `
-            <strong>${grupo.nome}</strong>
-            <span id="contadorGrupo${index}" class="contador">00:00:00</span>
-            <button onclick="pausarContadorIndividual(${index})" ${grupo.concluido ? 'disabled' : ''}>Pausar</button>
-        `;
-        listaGrupos.appendChild(divGrupo);
-    });
+function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
-function resetarTabelaPontuacoes() {
-    const tbody = document.getElementById('corpoTabela');
-    tbody.innerHTML = '';
-}
-
-function atualizarTabelaPontuacoes() {
-    const tbody = document.getElementById('corpoTabela');
-    tbody.innerHTML = '';
-
-    // Ordenar grupos por tempo (menor tempo primeiro)
-    grupos.sort((a, b) => a.tempo - b.tempo);
-
-    grupos.forEach((grupo, index) => {
-        const newRow = tbody.insertRow();
-        newRow.insertCell(0).textContent = index + 1;
-        newRow.insertCell(1).textContent = grupo.nome;
-        newRow.insertCell(2).textContent = formatarTempo(grupo.tempo);
-        newRow.insertCell(3).textContent = calcularPontuacao(grupo.tempo).toFixed(2);
-    });
-}
-
-function exportarDados() {
-    const dados = grupos.map((grupo, index) => ({
-        Posição: index + 1,
-        'Nome do Grupo': grupo.nome,
-        Tempo: formatarTempo(grupo.tempo),
-        Pontuação: calcularPontuacao(grupo.tempo).toFixed(2)
-    }));
-
-    const cssStyles = `
-        <style>
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                font-family: Arial, sans-serif;
-            }
-            th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
-            th {
-                background-color: #007bff;
-                color: white;
-            }
-            tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
-        </style>
-    `;
-
-    const tabelaHtml = `
-        ${cssStyles}
-        <table>
-            <thead>
-                <tr>
-                    <th>Posição</th>
-                    <th>Nome do Grupo</th>
-                    <th>Tempo</th>
-                    <th>Pontuação</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${dados.map(grupo =>
-                    `<tr>
-                        <td>${grupo['Posição']}</td>
-                        <td>${grupo['Nome do Grupo']}</td>
-                        <td>${grupo['Tempo']}</td>
-                        <td>${grupo['Pontuação']}</td>
-                    </tr>`
-                ).join('')}
-            </tbody>
-        </table>
-        <button onclick="window.print()">Imprimir Página</button>
-    `;
-
-    const blob = new Blob([tabelaHtml], { type: 'text/html;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.setAttribute('download', 'pontuacoes.html');
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-// Inicialização da lista de grupos ao carregar a página
-document.addEventListener('DOMContentLoaded', atualizarListaGrupos);
+document.addEventListener('DOMContentLoaded', renderGroups);
